@@ -9,11 +9,19 @@ PShape bullet;
 PShape heart;
 PShape chickensScore;
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
-float speed = 15;
+ArrayList < PVector > eggs = new ArrayList < PVector> (); 
+float speed = 30;
 float y = 740;
 int x = 0;
 int attempts = 5;
 int Scor = 0;
+int blueChickenX = 200;
+int blueChickenY = 50;
+int redChickenX = 1000;
+int redChickenY = 50;
+int blueChickenEggY = blueChickenY + 100;
+int redChickenEggY = redChickenY + 100;
+
 void setup()
 {
     size(1680, 900);
@@ -92,9 +100,21 @@ void draw()
         shape(spaceship, width - 80, height - 160, 80, 80);
     }
     // Work on these shapes
-    shape(blueChicken, 400, 200);
-    shape(redChicken, 600, 200);
+    shape(blueChicken, blueChickenX, blueChickenY);
+    shape(redChicken, redChickenX, redChickenY);
     shape(chickenMeal, 600, 400, 80, 80);
     shape(egg, 800, 300, 26, 26);
     shape(crackedEgg, 800, 500, 40, 40);
+
+    // blue chicken egg
+    if (blueChickenEggY >= height) blueChickenEggY = blueChickenY + 100;
+    else blueChickenEggY += speed;
+    shape(egg, blueChickenX+35, blueChickenEggY, 26, 26);
+
+    // red chicken egg
+    if (redChickenEggY >= height) redChickenEggY = redChickenY + 100;
+    else redChickenEggY += speed;
+    shape(egg, redChickenX+35, redChickenEggY, 26, 26);
+
+
 }
