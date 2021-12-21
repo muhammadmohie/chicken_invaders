@@ -79,9 +79,11 @@ void draw()
     text(Scor, 180, height - 25);
     
     // Work on show bullets
+    if(frameCount %3 == 0){
     if(x == 1) // if he pressed on click left much time the number of bullets incressed
     {
         bullets.add(new PVector(mouseX + 12, y));
+    }
     }
     if(mousePressed == false)
     {
