@@ -9,7 +9,7 @@ PShape bullet;
 PShape heart;
 PShape chickensScore;
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
-ArrayList < PVector > eggs = new ArrayList < PVector> (); 
+ArrayList < PVector > eggs = new ArrayList < PVector> ();
 float speed = 30;
 float y = 740;
 int x = 0;
@@ -21,7 +21,9 @@ int redChickenX = 1000;
 int redChickenY = 50;
 int blueChickenEggY = blueChickenY + 100;
 int redChickenEggY = redChickenY + 100;
-
+int frameCountEasyness = 15;
+int blueChickenDirection = 1;
+int redChickenDirection = -1;
 void setup()
 {
     size(1680, 900);
@@ -100,21 +102,51 @@ void draw()
         shape(spaceship, width - 80, height - 160, 80, 80);
     }
     // Work on these shapes
+    //shape(blueChicken, blueChickenX, blueChickenY);
+    // shape(redChicken, redChickenX, redChickenY);
+    // shape(chickenMeal, 600, 400, 80, 80);
+    // shape(egg, 800, 300, 26, 26);
+    // shape(crackedEgg, 800, 500, 40, 40);
+
+    // Move blue chicken
+    if (blueChickenX >= width - 110 || blueChickenX < 0) {
+        blueChickenDirection = -blueChickenDirection;
+    }
+    blueChickenX += speed * blueChickenDirection;
     shape(blueChicken, blueChickenX, blueChickenY);
+    
+    // Move red chicken
+    if (redChickenX >= width - 110 || redChickenX < 0) {
+        redChickenDirection = -redChickenDirection;
+    }
+    redChickenX += speed * redChickenDirection;
     shape(redChicken, redChickenX, redChickenY);
-    shape(chickenMeal, 600, 400, 80, 80);
-    shape(egg, 800, 300, 26, 26);
-    shape(crackedEgg, 800, 500, 40, 40);
+    
 
-    // blue chicken egg
-    if (blueChickenEggY >= height) blueChickenEggY = blueChickenY + 100;
-    else blueChickenEggY += speed;
-    shape(egg, blueChickenX+35, blueChickenEggY, 26, 26);
+    // Egg spawning
+    if (frameCount % frameCountEasyness == 0) {
+        eggs.add(new PVector(blueChickenX + 70.8/2, blueChickenY + 100));
+        eggs.add(new PVector(redChickenX + 70.8/2, redChickenY + 100));
+        System.out.println("new egg, #eggs=" + eggs.size());
 
-    // red chicken egg
-    if (redChickenEggY >= height) redChickenEggY = redChickenY + 100;
-    else redChickenEggY += speed;
-    shape(egg, redChickenX+35, redChickenEggY, 26, 26);
+    }
+    for(int i = 0; i < eggs.size(); i++) {
+        PVector e = eggs.get(i);
+        if (e.y >= height) {
+            eggs.remove(i);
+        }
+        else {
+            e.y += speed;
+            shape(egg, e.x, e.y, 26, 26);
+        }
+        
+    }
+
+
+    // // red chicken egg
+    // if (redChickenEggY >= height) redChickenEggY = redChickenY + 100;
+    // else redChickenEggY += speed;
+    // shape(egg, redChickenX+35, redChickenEggY, 26, 26);
 
 
 }
