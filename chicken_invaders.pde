@@ -14,9 +14,10 @@ ArrayList < ChickenVector > chicken = new ArrayList < ChickenVector > ();
 float speed = 30;
 float y = 740;
 int x = 0;
+int timer = 4000;
 int attempts = 5;
 int Scor = 0;
-int frameCountEasyness = 15; 
+int frameCountEasyness = 15;
 class ChickenVector extends PVector
 {
     // c = 0 => blueChicken
@@ -93,7 +94,7 @@ void draw()
         PVector b = bullets.get(i);
         // move and show  bullets
         b.y -= speed;
-        shape(bullet, b.x, b.y, 50 , 50);
+        shape(bullet, b.x, b.y, 50, 50);
         // remove the bullet if reach to the end of the screen
         if(!bullets.isEmpty())
         {
@@ -152,7 +153,11 @@ void draw()
         if(e.y >= height - 70)
         {
             shape(crackedEgg, e.x, e.y, 40, 40);
-            eggs.remove(i);
+            if(millis() - timer >= 500)
+            {
+                eggs.remove(i);
+                timer = millis();
+            }
         }
         else
         {
@@ -164,17 +169,25 @@ void draw()
                 if(e.x + 26 > mouseX && e.x < mouseX + 80 && e.y + 26 > height - 160 && e.y < height - 80)
                 {
                     shape(crackedEgg, e.x, e.y, 40, 40);
-                    eggs.remove(i);
+                    if(millis() - timer >= 500)
+                    {
+                        eggs.remove(i);
+                        timer = millis();
+                    }
                     if(attempts != 0) attempts--;
                 }
             }
             else
-            { 
+            {
                 if(e.x + 26 > width - 80 && e.x < width + 80 && e.y + 26 > height - 160 && e.y < height - 80)
                 {
                     shape(crackedEgg, e.x, e.y, 40, 40);
-                    eggs.remove(i);
-                    if(attempts != 0) attempts--; 
+                    if(millis() - timer >= 500)
+                    {
+                        eggs.remove(i);
+                        timer = millis();
+                    }
+                    if(attempts != 0) attempts--;
                 }
             }
         }
