@@ -29,7 +29,8 @@ int timer = 4000;
 int attempts = 5;
 int score = 0;
 int frameCountEasyness = 15;
-
+int chickenSpeed = 20;
+int eggSpeed = 20;
 boolean gameStart = true;
 boolean gameEnd = false;
 
@@ -48,7 +49,7 @@ class ChickenVector extends PVector
 
     void draw() {
         if(this.x >= width - 110 || this.x < 0) this.dir = -this.dir;
-        this.x += speed * this.dir;
+        this.x += chickenSpeed * this.dir;
         if(this.clr == 0) shape(blueChicken, this.x, this.y);
         else if(this.clr == 1) shape(redChicken, this.x, this.y);
         if(frameCount % frameCountEasyness == 0)
@@ -57,6 +58,20 @@ class ChickenVector extends PVector
         }
     }
 }
+
+void spawnLevel1Chicken() {
+    int xMargin = 400;
+    int yMargin = 150;
+    int x = 100;
+    int y = 50;
+    // rows
+    for(int i = 0; i < 2; i++) {
+        for(int j = 0; j < 2; j++) {
+            chicken.add(new ChickenVector(x + j * xMargin, y + i * yMargin, 1, 1));
+        }
+    }
+}
+
 void setup()
 {
     size(1680, 900);
@@ -75,10 +90,7 @@ void setup()
     bullet = loadShape("bullet.svg");
     heart = loadShape("heart.svg");
     chickensScore = loadShape("score.svg");
-    chicken.add(new ChickenVector(100, 50, 0, 1));
-    chicken.add(new ChickenVector(400, 150, 1, -1));
-    chicken.add(new ChickenVector(700, 300, 1, 1));
-    
+
     // Loading fonts
     titleFont = loadFont("ShowcardGothic-Reg-100.vlw");
     bodyFont = loadFont("SakkalMajalla-Bold-48.vlw");
@@ -122,6 +134,7 @@ void draw()
     if(keyPressed || mousePressed){
       gameStart = false;
     }
+    spawnLevel1Chicken();
     
   } else if(gameEnd) {
     
@@ -233,7 +246,7 @@ void draw()
         }
         else
         {
-            e.y += speed;
+            e.y += eggSpeed;
             shape(egg, e.x, e.y, 26, 26);
             // losing attempts
             if((mouseX + 80) <= width)
