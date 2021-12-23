@@ -52,7 +52,7 @@ void setup()
     surface.setResizable(true);
     
     // Loading Images
-    background = loadImage("background-image-02.jpg");
+    background = loadImage("background.jpg");
     
     // Loading Shapes
     blueChicken = loadShape("blue-chicken.svg");
@@ -60,10 +60,10 @@ void setup()
     chickenMeal = loadShape("chicken-meal.svg");
     egg = loadShape("egg.svg");
     crackedEgg = loadShape("cracked-egg.svg");
-    spaceship = loadShape("spaceship-02.svg");
+    spaceship = loadShape("spaceship.svg");
     bullet = loadShape("bullet.svg");
-    heart = loadShape("heart-new.svg");
-    chickensScore = loadShape("chickens-score-new.svg");
+    heart = loadShape("heart.svg");
+    chickensScore = loadShape("score.svg");
     chicken.add(new ChickenVector(100, 50, 0, 1));
     chicken.add(new ChickenVector(400, 150, 1, -1));
     chicken.add(new ChickenVector(700, 300, 1, 1));
