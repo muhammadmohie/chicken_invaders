@@ -33,6 +33,7 @@ int chickenSpeed = 20;
 int eggSpeed = 20;
 boolean gameStart = true;
 boolean gameEnd = false;
+boolean drawOnce = true;
 
 class ChickenVector extends PVector
 {
@@ -70,6 +71,14 @@ void spawnLevel1Chicken() {
             chicken.add(new ChickenVector(x + j * xMargin, y + i * yMargin, 1, 1));
         }
     }
+}
+
+void reset(){
+  score = 0;
+  attempts = 5;
+  chicken.clear();
+  eggs.clear();
+  bullets.clear();
 }
 
 void setup()
@@ -134,8 +143,6 @@ void draw()
     if(keyPressed || mousePressed){
       gameStart = false;
     }
-    spawnLevel1Chicken();
-    
   } else if(gameEnd) {
     
     // Draw the background for the game end
@@ -160,7 +167,10 @@ void draw()
     }
     
   } else {
-    
+    if(drawOnce){
+      spawnLevel1Chicken();
+      drawOnce = false;
+    }
     // Draw the background for the game
     image(background, 0, 0, width, height);
     
@@ -212,6 +222,9 @@ void draw()
                     score++;
                 }
             }
+            if(chicken.isEmpty()){
+              reset();
+            }
             
         }
     }
@@ -260,6 +273,9 @@ void draw()
                         timer = millis();
                     }
                     if(attempts != 0) attempts--;
+                    else{
+                      reset();
+                    }
                 }
             }
             else
@@ -273,6 +289,7 @@ void draw()
                         timer = millis();
                     }
                     if(attempts != 0) attempts--;
+                    else reset();
                 }
             }
         }
