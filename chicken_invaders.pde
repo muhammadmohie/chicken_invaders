@@ -1,4 +1,13 @@
+
+//Fonts 
+String title = "CHICKEN INVADERS";
+PFont titleFont;
+PFont bodyFont;
+
+// Images
 PImage background;
+
+// Shapes
 PShape blueChicken;
 PShape redChicken;
 PShape chickenMeal;
@@ -8,6 +17,8 @@ PShape spaceship;
 PShape bullet;
 PShape heart;
 PShape chickensScore;
+
+// Collections and variables
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
 ArrayList < PVector > eggs = new ArrayList < PVector > ();
 ArrayList < ChickenVector > chicken = new ArrayList < ChickenVector > ();
@@ -16,8 +27,12 @@ float y = 740;
 int x = 0;
 int timer = 4000;
 int attempts = 5;
-int Scor = 0;
+int score = 0;
 int frameCountEasyness = 15;
+
+boolean gameStart = true;
+boolean gameEnd = false;
+
 class ChickenVector extends PVector
 {
     // c = 0 => blueChicken
@@ -35,20 +50,30 @@ void setup()
 {
     size(1680, 900);
     surface.setResizable(true);
+    
+    // Loading Images
     background = loadImage("background-image-02.jpg");
+    
+    // Loading Shapes
     blueChicken = loadShape("blue-chicken.svg");
     redChicken = loadShape("red-chicken.svg");
     chickenMeal = loadShape("chicken-meal.svg");
     egg = loadShape("egg.svg");
     crackedEgg = loadShape("cracked-egg.svg");
-    spaceship = loadShape("spaceship.svg");
+    spaceship = loadShape("spaceship-02.svg");
     bullet = loadShape("bullet.svg");
-    heart = loadShape("heart.svg");
-    chickensScore = loadShape("chickens-score.svg");
+    heart = loadShape("heart-new.svg");
+    chickensScore = loadShape("chickens-score-new.svg");
     chicken.add(new ChickenVector(100, 50, 0, 1));
     chicken.add(new ChickenVector(400, 150, 1, -1));
     chicken.add(new ChickenVector(700, 300, 1, 1));
+    
+    // Loading fonts
+    titleFont = loadFont("ShowcardGothic-Reg-100.vlw");
+    bodyFont = loadFont("SakkalMajalla-Bold-48.vlw");
+
 }
+
 void mousePressed()
 {
     if(mouseButton == LEFT)
@@ -66,16 +91,62 @@ void mousePressed()
         }
     }
 }
+
 void draw()
 {
+  if(gameStart) {
+    
+    // Draw the background for the game start
+    image(background, 0, 0, width, height);
+    
+    fill(255,255,255);
+    stroke(151, 223, 252);
+    textFont(titleFont);
+    text(title, width/2-458,height/2);
+
+    fill(240, 200, 8);
+    textFont(bodyFont);
+    text("Press any key to start the game!", width/2-246,height/2+100);
+    
+    if(keyPressed || mousePressed){
+      gameStart = false;
+    }
+    
+  } else if(gameEnd) {
+    
+    // Draw the background for the game end
+    image(background, 0, 0, width, height);
+    fill(255,255,255);
+    stroke(151, 223, 252);
+    textFont(titleFont);
+    text(title, width/2-458,height/2);
+
+    fill(240, 200, 8);
+    textFont(bodyFont);
+    text("Your score is: " + score, width/2-114,height/2+100);
+    
+    fill(255, 255, 255);
+    text("Press any key to play again", width/2-246,height/2+200);
+    
+    if(keyPressed || mousePressed){
+      gameStart = false;
+      gameEnd = false;
+      attempts = 5;
+      score = 0;
+    }
+    
+  } else {
+    
     // Draw the background for the game
     image(background, 0, 0, width, height);
+    
     // Score details
-    shape(heart, 30, height - 50, 30, 30);
-    textSize(25);
-    text(attempts, 80, height - 25);
-    shape(chickensScore, 120, height - 55, 40, 40);
-    text(Scor, 180, height - 25);
+    shape(heart, 20, 20, 30, 30);
+    textSize(36);
+    text(attempts, 70, 45);
+    shape(chickensScore, 120, 15, 40, 40);
+    text(score, 170, 45);
+    
     // Work on show bullets
     if(frameCount % 3 == 0)
     {
@@ -88,6 +159,7 @@ void draw()
     {
         x = 0;
     }
+    
     for(int i = 0; i < bullets.size(); i++)
     {
         // get start points of each bullet
@@ -113,9 +185,10 @@ void draw()
                 if(b.x + 40 > toBeKilled.x && b.x < toBeKilled.x + 80 && b.y < toBeKilled.y + chickenHeight / 2 && b.y > toBeKilled.y)
                 {
                     chicken.remove(j);
-                    Scor++;
+                    score++;
                 }
             }
+            
         }
     }
     // Work on spaceship
@@ -127,12 +200,7 @@ void draw()
     { // to prevent show the spaceship outsize the screen
         shape(spaceship, width - 80, height - 160, 80, 80);
     }
-    // Work on these shapes
-    //shape(blueChicken, blueChickenX, blueChickenY);
-    // shape(redChicken, redChickenX, redChickenY);
-    // shape(chickenMeal, 600, 400, 80, 80);
-    // shape(egg, 800, 300, 26, 26);
-    // shape(crackedEgg, 800, 500, 40, 40);
+
     // Move chicken
     for(int i = 0; i < chicken.size(); i++)
     {
@@ -191,5 +259,6 @@ void draw()
                 }
             }
         }
+    }
     }
 }
