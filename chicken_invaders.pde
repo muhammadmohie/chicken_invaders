@@ -45,6 +45,17 @@ class ChickenVector extends PVector
         this.clr = c;
         this.dir = d;
     }
+
+    void draw() {
+        if(this.x >= width - 110 || this.x < 0) this.dir = -this.dir;
+        this.x += speed * this.dir;
+        if(this.clr == 0) shape(blueChicken, this.x, this.y);
+        else if(this.clr == 1) shape(redChicken, this.x, this.y);
+        if(frameCount % frameCountEasyness == 0)
+        {
+            eggs.add(new PVector(this.dir == 1 ? this.x + 20 : this.x, this.y + 50));
+        }
+    }
 }
 void setup()
 {
@@ -205,14 +216,7 @@ void draw()
     for(int i = 0; i < chicken.size(); i++)
     {
         ChickenVector c = chicken.get(i);
-        if(c.x >= width - 110 || c.x < 0) c.dir = -c.dir;
-        c.x += speed * c.dir;
-        if(c.clr == 0) shape(blueChicken, c.x, c.y);
-        else if(c.clr == 1) shape(redChicken, c.x, c.y);
-        if(frameCount % frameCountEasyness == 0)
-        {
-            eggs.add(new PVector(c.dir == 1 ? c.x + 20 : c.x, c.y + 50));
-        }
+        c.draw();
     }
     // Egg spawning
     for(int i = 0; i < eggs.size(); i++)
