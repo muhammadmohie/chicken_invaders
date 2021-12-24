@@ -24,6 +24,7 @@ int x = 0;
 int timer = 4000;
 int attempts = 5;
 int score = 0;
+int resultScore = 0;
 int frameCountEasyness = 15;
 int chickenSpeed = 20;
 int eggSpeed = 20;
@@ -32,6 +33,7 @@ int xd;
 boolean gameStart = true;
 boolean gameEnd = false;
 boolean drawOnce = true;
+
 class ChickenVector extends PVector
 {
     // c = 0 => blueChicken
@@ -98,6 +100,7 @@ void setup()
     // Loading fonts
     titleFont = loadFont("ShowcardGothic-Reg-100.vlw");
     bodyFont = loadFont("SakkalMajalla-Bold-48.vlw");
+    
 }
 void mousePressed()
 {
@@ -183,6 +186,7 @@ void draw()
     }
     else if(gameEnd)
     {
+        reset();
         // Draw the background for the game end
         image(background, 0, 0, width, height);
         fill(255, 255, 255);
@@ -191,15 +195,13 @@ void draw()
         text(title, width / 2 - 458, height / 2);
         fill(240, 200, 8);
         textFont(bodyFont);
-        text("Your score is: " + score, width / 2 - 114, height / 2 + 100);
+        text("Your score is: " + resultScore, width / 2 - 114, height / 2 + 100);
         fill(255, 255, 255);
         text("Press any key to play again", width / 2 - 246, height / 2 + 200);
         if(keyPressed || mousePressed)
         {
-            gameStart = false;
             gameEnd = false;
-            attempts = 5;
-            score = 0;
+            spawnLevel1Chicken();
         }
     }
     else
@@ -270,7 +272,9 @@ void draw()
                 }
                 if(chicken.isEmpty())
                 {
-                    reset();
+                    gameEnd = true;
+                    resultScore = score;
+                    break;
                 }
             }
         }
@@ -325,7 +329,9 @@ void draw()
                         if(attempts != 0) attempts--;
                         else
                         {
-                            reset();
+                            gameEnd = true;
+                            resultScore = score;
+                            break;
                         }
                     }
                 }
@@ -340,7 +346,11 @@ void draw()
                             timer = millis();
                         }
                         if(attempts != 0) attempts--;
-                        else reset();
+                        else {
+                            gameEnd = true;
+                            resultScore = score;
+                            break;
+                        }
                     }
                 }
             }
