@@ -26,15 +26,33 @@ int timer = 4000;
 int attempts = 5;
 int score = 0;
 int resultScore = 0;
-int frameCountEasyness = 30;
-int chickenSpeed = 20;
+int frameCountEasyness = 20;
+int chickenSpeed = 10;
+int eggSpeed = 20;
 int chickenMealSpeed = 30;
-int eggSpeed = 30;
+
 int time = 0;
 int xd;
 boolean gameStart = true;
 boolean gameEnd = false;
 boolean drawOnce = true;
+int level = 1;
+int maxLevel = 2;
+
+void levelUp() {
+    level++;
+    chickenSpeed += 5;
+    frameCountEasyness -= 5;
+    //spawnChicken(level);
+}
+
+void levelDown() {
+    level--;
+    chickenSpeed -= 5;
+    frameCountEasyness += 5;
+    //spawnChicken(level);
+}
+
 ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
 ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
 
@@ -58,22 +76,25 @@ class ChickenVector extends PVector
         else if(this.clr == 1) shape(redChicken, this.x, this.y);
         if(frameCount % frameCountEasyness == 0)
         {
-            eggs.add(new PVector(this.dir == 1 ? this.x + 20 : this.x, this.y + 50));
+            int layEgg = Math.round(random(0, 1));
+            if (layEgg == 1) eggs.add(new PVector(this.dir == 1 ? this.x + 20 : this.x, this.y + 50));
+            else System.out.println("Chicken deceided not to lay an egg");
         }
     }
 }
-void spawnLevel1Chicken()
+void spawnChicken(int row)
 {
-    int xMargin = 400;
-    int yMargin = 150;
+    int col = 5;
+    int xMargin = 300;
+    int yMargin = 100;
     int x = 100;
     int y = 50;
     // rows
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < row; i++)
     {
-        for(int j = 0; j < 2; j++)
+        for(int j = 0; j < col; j++)
         {
-            chicken.add(new ChickenVector(x + j * xMargin, y + i * yMargin, 1, 1));
+            chicken.add(new ChickenVector(x + j * xMargin, y + i * yMargin, i % 2 == 0 ? 0 : 1 , i % 2 == 0 ? 1 : -1));
         }
     }
 }
@@ -175,6 +196,7 @@ void keyPressed()
 }
 void draw()
 {
+    System.out.println("# of chicken = " + chicken.size());
     if(gameStart)
     {
         // Draw the background for the game start
@@ -193,7 +215,7 @@ void draw()
     }
     else if(gameEnd)
     {
-        reset();
+        //reset();
         // Draw the background for the game end
         image(background, 0, 0, width, height);
         fill(255, 255, 255);
@@ -205,17 +227,46 @@ void draw()
         text("Your score is: " + resultScore, width / 2 - 114, height / 2 + 100);
         fill(255, 255, 255);
         text("Press any key to play again", width / 2 - 246, height / 2 + 200);
+        if (level > maxLevel) {
+            text("You have reached the end of the game",width / 2 - 144, 200);
+            System.out.println("Reached max level here");
+        }
         if(keyPressed || mousePressed)
         {
+            int tempScore = score;
+            System.out.println("Level = " + level);
+            System.out.println("attempts = " + attempts);
             gameEnd = false;
-            spawnLevel1Chicken();
+            if (level <= maxLevel) {
+                
+                // Try same level
+                if (attempts <= 0) {
+                    System.out.println("Retrying level");
+                    //spawnChicken(level);
+                }
+                // Level up
+                else {
+                    System.out.println("Level up");
+                    levelUp();
+                }
+                reset();
+                score = tempScore;
+            }
+            else {
+                level = 1;
+                chickenSpeed = 10;
+                frameCountEasyness = 20;
+                reset();
+            }
+
+            spawnChicken(level);
         }
     }
     else
     {
         if(drawOnce)
         {
-            spawnLevel1Chicken();
+            spawnChicken(level);
             drawOnce = false;
         }
         // Draw the background for the game
@@ -226,6 +277,7 @@ void draw()
         text(attempts, 70, 45);
         shape(chickensScore, 120, 15, 40, 40);
         text(score, 170, 45);
+        text("Level   " + (level), 20, 100);
         // Work on show bullets
         if(frameCount % 3 == 0)
         {
@@ -318,6 +370,7 @@ void draw()
               score++;
             }
           }
+
           popMatrix();
         }
         // Work on spaceship
