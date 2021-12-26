@@ -132,15 +132,15 @@ void mousePressed()
         //y = 740;
         x = 1;
         // add the start points of of each bullet in arrayList of vectors
-        if((mouseX + 80) <= width)
+        if((mouseX + 40) <= width && mouseX >= 40)
         {
             if(millis() - time >= 500)
             {
-                bullets.add(new PVector(mouseX + 12, mouseY));
+                bullets.add(new PVector(mouseX, mouseY));
             }
             time = millis();
         }
-        else if(mouseX <= 80)
+        else if(mouseX <= 40)
         {
             bullets.add(new PVector(40, mouseY));
         }
@@ -148,7 +148,7 @@ void mousePressed()
         { // to prevent show the bullet outsize the screen
             if(millis() - time >= 500)
             {
-                bullets.add(new PVector(width - 67, mouseY));
+                bullets.add(new PVector(width - 40, mouseY));
                 time = millis();
             }
         }
@@ -156,22 +156,22 @@ void mousePressed()
 }
 void keyPressed()
 {
-    if(key == 'A' || key == 'a' && xd >= 0)
+    if(key == 'A' || key == 'a' && xd >= 40)
     {
         xd = xd - shipSpeed;
         mouseX = xd;
     }
-    else if(key == 'D' || key == 'd' && xd <= width - 80)
+    else if(key == 'D' || key == 'd' && xd <= width - 40)
     {
         xd = xd + shipSpeed;
         mouseX = xd;
     }
-    else if(key == 'W' || key == 'w' && yd >= 0)
+    else if(key == 'W' || key == 'w' && yd >= 40)
     {
         yd = yd - shipSpeed;
         mouseY = yd;
     }
-    else if(key == 'S' || key == 's' && yd <= height - 80)
+    else if(key == 'S' || key == 's' && yd <= height - 40)
     {
         yd = yd + shipSpeed;
         mouseY = yd;
@@ -182,17 +182,17 @@ void keyPressed()
         // add the start points of of each bullet in arrayList of vectors
         if(millis() - time >= 150)
         {
-            if((xd + 80) <= width && xd > 0)
+            if((xd + 40) <= width && xd >= 40)
             {
-                bullets.add(new PVector(xd + 12, mouseY));
+                bullets.add(new PVector(xd, mouseY));
             }
-            if(xd <= 0)
+            if(xd <= 40)
             {
-                bullets.add(new PVector(17, mouseY));
+                bullets.add(new PVector(40, mouseY));
             }
-            if((xd + 80) >= width)
+            if((xd + 40) >= width)
             { // to prevent show the bullet outsize the screen
-                bullets.add(new PVector(width - 67, mouseY));
+                bullets.add(new PVector(width - 40, mouseY));
             }
             time = millis();
         }
@@ -290,17 +290,17 @@ void draw()
         {
             if(x == 1) // if he pressed on click left much time the number of bullets incressed
             {
-                if((mouseX + 80) <= width && xd > 0)
+                if((mouseX + 40) <= width && xd >= 40)
                 {
-                    bullets.add(new PVector(xd + 12, mouseY));
+                    bullets.add(new PVector(xd, mouseY));
                 }
-                if(mouseX <= 0)
+                if(mouseX <= 40)
                 {
-                    bullets.add(new PVector(17, mouseY));
+                    bullets.add(new PVector(40, mouseY));
                 }
-                if((mouseX + 80) >= width)
+                if((mouseX + 40) >= width)
                 {
-                    bullets.add(new PVector(width - 67, mouseY));
+                    bullets.add(new PVector(width - 40, mouseY));
                 }
             }
         }
@@ -385,45 +385,46 @@ void draw()
         //==================================================================================
         xd = mouseX;
         yd = mouseY;
+        shapeMode(CENTER);
         //if((xd + 80) <= width && xd > 0 && yd>0 && yd+80 <=height)
         //{
         //    shape(spaceship, xd, yd, 80, 80);
         //}
-        if(xd <= 0 && yd + 80 <= height)
+        if(xd <= 40 && yd + 40 <= height)
         {
-            xd = 0;
+            xd = 40;
         }
-        if(yd <= 0 && (xd + 80) <= width)
+        if(yd <= 40 && (xd + 40) <= width)
         {
-            yd = 0;
+            yd = 40;
         }
-        if(xd + 80 >= width && yd + 80 <= height && yd >= 0)
+        if(xd + 40 >= width && yd + 40 <= height && yd >= 40)
         { // to prevent show the spaceship outsize the screen
-            xd = width - 80;
+            xd = width - 40;
         }
-        if(yd + 80 >= height && (xd + 80) <= width)
+        if(yd + 40 >= height && (xd + 40) <= width)
         {
-            yd = height - 80;
+            yd = height - 40;
         }
-        if(yd < 0 && (xd + 80) >= width)
+        if(yd < 40 && (xd + 40) >= width)
         {
-            xd = width - 80;
-            yd = 0;
+            xd = width - 40;
+            yd = 40;
         }
-        if(yd <= 0 && xd <= 0)
+        if(yd <= 40 && xd <= 40)
         {
-            xd = 0;
-            yd = 0;
+            xd = 40;
+            yd = 40;
         }
-        if(yd + 80 >= height && (xd + 80) >= width)
+        if(yd + 40 >= height && (xd + 40) >= width)
         {
-            xd = width - 80;
-            yd = height - 80;
+            xd = width - 40;
+            yd = height - 40;
         }
-        if(yd + 80 >= height && xd <= 0)
+        if(yd + 40 >= height && xd <= 40)
         {
-            xd = 0;
-            yd = height - 80;
+            xd = 40;
+            yd = height - 40;
         }
         shape(spaceship, xd, yd, 80, 80);
         //=============================================================================
