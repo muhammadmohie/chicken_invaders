@@ -209,7 +209,6 @@ void draw()
         if(keyPressed || mousePressed)
         {
             gameStart = false;
-            //spawnChicken(level);
         }
     }
     else if(gameEnd)
