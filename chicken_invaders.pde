@@ -14,13 +14,11 @@ PShape spaceship;
 PShape bullet;
 PShape heart;
 PShape chickensScore;
-
 // Collections and variables
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
 ArrayList < PVector > eggs = new ArrayList < PVector > ();
 ArrayList < ChickenVector > chicken = new ArrayList < ChickenVector > ();
 float speed = 30;
-float y = 740;
 int x = 0;
 int timer = 4000;
 int attempts = 5;
@@ -30,32 +28,31 @@ int frameCountEasyness = 20;
 int chickenSpeed = 10;
 int eggSpeed = 20;
 int chickenMealSpeed = 30;
-
 int time = 0;
 int xd;
+int yd;
+int shipSpeed = 20;
 boolean gameStart = true;
 boolean gameEnd = false;
 boolean drawOnce = true;
 int level = 1;
 int maxLevel = 2;
-
-void levelUp() {
+void levelUp()
+{
     level++;
     chickenSpeed += 5;
     frameCountEasyness -= 5;
     //spawnChicken(level);
 }
-
-void levelDown() {
+void levelDown()
+{
     level--;
     chickenSpeed -= 5;
     frameCountEasyness += 5;
     //spawnChicken(level);
 }
-
 ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
 ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
-
 class ChickenVector extends PVector
 {
     // c = 0 => blueChicken
@@ -77,7 +74,7 @@ class ChickenVector extends PVector
         if(frameCount % frameCountEasyness == 0)
         {
             int layEgg = Math.round(random(0, 1));
-            if (layEgg == 1) eggs.add(new PVector(this.dir == 1 ? this.x + 20 : this.x, this.y + 50));
+            if(layEgg == 1) eggs.add(new PVector(this.dir == 1 ? this.x + 20 : this.x, this.y + 50));
             else System.out.println("Chicken deceided not to lay an egg");
         }
     }
@@ -94,7 +91,7 @@ void spawnChicken(int row)
     {
         for(int j = 0; j < col; j++)
         {
-            chicken.add(new ChickenVector(x + j * xMargin, y + i * yMargin, i % 2 == 0 ? 0 : 1 , i % 2 == 0 ? 1 : -1));
+            chicken.add(new ChickenVector(x + j * xMargin, y + i * yMargin, i % 2 == 0 ? 0 : 1, i % 2 == 0 ? 1 : -1));
         }
     }
 }
@@ -127,32 +124,31 @@ void setup()
     // Loading fonts
     titleFont = loadFont("ShowcardGothic-Reg-100.vlw");
     bodyFont = loadFont("SakkalMajalla-Bold-48.vlw");
-    
 }
 void mousePressed()
 {
     if(mouseButton == LEFT)
     {
-        y = 740;
+        //y = 740;
         x = 1;
         // add the start points of of each bullet in arrayList of vectors
         if((mouseX + 80) <= width)
         {
             if(millis() - time >= 500)
             {
-                bullets.add(new PVector(mouseX + 12, y));
+                bullets.add(new PVector(mouseX + 12, mouseY));
             }
             time = millis();
         }
         else if(mouseX <= 80)
         {
-            bullets.add(new PVector(40, y));
+            bullets.add(new PVector(40, mouseY));
         }
         else
         { // to prevent show the bullet outsize the screen
             if(millis() - time >= 500)
             {
-                bullets.add(new PVector(width - 67, y));
+                bullets.add(new PVector(width - 67, mouseY));
                 time = millis();
             }
         }
@@ -160,36 +156,44 @@ void mousePressed()
 }
 void keyPressed()
 {
-    //if(key == CODED){
-    if(key == 'A' || key == 'a')
+    if(key == 'A' || key == 'a' && xd >= 0)
     {
-        xd = xd - 20;
+        xd = xd - shipSpeed;
         mouseX = xd;
     }
-    else if(key == 'D' || key == 'd')
+    else if(key == 'D' || key == 'd' && xd <= width - 80)
     {
-        xd = xd + 20;
+        xd = xd + shipSpeed;
         mouseX = xd;
+    }
+    else if(key == 'W' || key == 'w' && yd >= 0)
+    {
+        yd = yd - shipSpeed;
+        mouseY = yd;
+    }
+    else if(key == 'S' || key == 's' && yd <= height - 80)
+    {
+        yd = yd + shipSpeed;
+        mouseY = yd;
     }
     else if(key == ' ')
     {
-        y = 740;
+        //y = 740;
         // add the start points of of each bullet in arrayList of vectors
         if(millis() - time >= 150)
         {
             if((xd + 80) <= width && xd > 0)
             {
-                bullets.add(new PVector(xd + 12, y));
+                bullets.add(new PVector(xd + 12, mouseY));
             }
             if(xd <= 0)
             {
-                bullets.add(new PVector(17, y));
+                bullets.add(new PVector(17, mouseY));
             }
             if((xd + 80) >= width)
             { // to prevent show the bullet outsize the screen
-                bullets.add(new PVector(width - 67, y));
+                bullets.add(new PVector(width - 67, mouseY));
             }
-
             time = millis();
         }
     }
@@ -227,8 +231,9 @@ void draw()
         text("Your score is: " + resultScore, width / 2 - 114, height / 2 + 100);
         fill(255, 255, 255);
         text("Press any key to play again", width / 2 - 246, height / 2 + 200);
-        if (level > maxLevel) {
-            text("You have reached the end of the game",width / 2 - 144, 200);
+        if(level > maxLevel)
+        {
+            text("You have reached the end of the game", width / 2 - 144, 200);
             System.out.println("Reached max level here");
         }
         if(keyPressed || mousePressed)
@@ -237,28 +242,30 @@ void draw()
             System.out.println("Level = " + level);
             System.out.println("attempts = " + attempts);
             gameEnd = false;
-            if (level <= maxLevel) {
-                
+            if(level <= maxLevel)
+            {
                 // Try same level
-                if (attempts <= 0) {
+                if(attempts <= 0)
+                {
                     System.out.println("Retrying level");
                     //spawnChicken(level);
                 }
                 // Level up
-                else {
+                else
+                {
                     System.out.println("Level up");
                     levelUp();
                 }
                 reset();
                 score = tempScore;
             }
-            else {
+            else
+            {
                 level = 1;
                 chickenSpeed = 10;
                 frameCountEasyness = 20;
                 reset();
             }
-
             spawnChicken(level);
         }
     }
@@ -285,15 +292,15 @@ void draw()
             {
                 if((mouseX + 80) <= width && xd > 0)
                 {
-                    bullets.add(new PVector(xd + 12, y));
+                    bullets.add(new PVector(xd + 12, mouseY));
                 }
                 if(mouseX <= 0)
                 {
-                    bullets.add(new PVector(17, y));
+                    bullets.add(new PVector(17, mouseY));
                 }
                 if((mouseX + 80) >= width)
                 {
-                    bullets.add(new PVector(width - 67, y));
+                    bullets.add(new PVector(width - 67, mouseY));
                 }
             }
         }
@@ -326,71 +333,104 @@ void draw()
                     if(b.x + 40 > toBeKilled.x && b.x < toBeKilled.x + 80 && b.y < toBeKilled.y + chickenHeight / 2 && b.y > toBeKilled.y)
                     {
                         chicken.remove(j);
-                        chickenMeals.add(new PVector(toBeKilled.x , toBeKilled.y));
+                        chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
                         chickenMealTranslation.add(new PVector(0, 0));
                         //score++;
                     }
                 }
-          }
+            }
         }
         if(chicken.isEmpty() && chickenMeals.isEmpty())
         {
-          gameEnd = true;
-          resultScore = score;
+            gameEnd = true;
+            resultScore = score;
         }
-          
         // chicken meals translation
-        for(int i=0;i<chickenMeals.size();i++){
-          chickenMealTranslation.get(i).y += chickenMealSpeed;
-          pushMatrix();
-          translate(chickenMealTranslation.get(i).x ,chickenMealTranslation.get(i).y );
-          shape(chickenMeal, chickenMeals.get(i).x , chickenMeals.get(i).y);
-          // if the rocket catched the meal increase the score
-          float xPos = chickenMeals.get(i).x;
-          float yPos = chickenMeals.get(i).y + chickenMealTranslation.get(i).y;
-          if(yPos > height){
-            chickenMeals.remove(i);
-            chickenMealTranslation.remove(i);
-          }
-          if((mouseX + 80) <= width)
-          {
-            if(xPos + 80 > mouseX && xPos < mouseX + 80 && yPos + 80 > height - 160 && yPos < height - 80)
+        for(int i = 0; i < chickenMeals.size(); i++)
+        {
+            chickenMealTranslation.get(i).y += chickenMealSpeed;
+            pushMatrix();
+            translate(chickenMealTranslation.get(i).x, chickenMealTranslation.get(i).y);
+            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y);
+            // if the rocket catched the meal increase the score
+            float xPos = chickenMeals.get(i).x;
+            float yPos = chickenMeals.get(i).y + chickenMealTranslation.get(i).y;
+            if(yPos > height)
             {
-              chickenMeals.remove(i);
-              chickenMealTranslation.remove(i);
-              score++;
+                chickenMeals.remove(i);
+                chickenMealTranslation.remove(i);
             }
-          }
-          else
-          {
-            if(xPos + 80 > width - 80 && xPos < width + 80 && yPos + 80 > height - 160 && yPos < height - 80)
+            if((mouseX + 80) <= width)
             {
-              chickenMeals.remove(i);
-              chickenMealTranslation.remove(i);
-              score++;
+                if(xPos + 80 > mouseX && xPos < mouseX + 80 && yPos + 80 > height - 160 && yPos < height - 80)
+                {
+                    chickenMeals.remove(i);
+                    chickenMealTranslation.remove(i);
+                    score++;
+                }
             }
-          }
-
-          popMatrix();
+            else
+            {
+                if(xPos + 80 > width - 80 && xPos < width + 80 && yPos + 80 > height - 160 && yPos < height - 80)
+                {
+                    chickenMeals.remove(i);
+                    chickenMealTranslation.remove(i);
+                    score++;
+                }
+            }
+            popMatrix();
         }
+        //==================================================================================
         // Work on spaceship
+        //==================================================================================
         xd = mouseX;
-        if((xd + 80) <= width && xd > 0)
+        yd = mouseY;
+        //if((xd + 80) <= width && xd > 0 && yd>0 && yd+80 <=height)
+        //{
+        //    shape(spaceship, xd, yd, 80, 80);
+        //}
+        if(xd <= 0 && yd + 80 <= height)
         {
-            shape(spaceship, xd, height - 160, 80, 80);
+            xd = 0;
         }
-        if(xd <= 0)
+        if(yd <= 0 && (xd + 80) <= width)
         {
-            shape(spaceship, 0, height - 160, 80, 80);
+            yd = 0;
         }
-        if(xd + 80 >= width)
+        if(xd + 80 >= width && yd + 80 <= height && yd >= 0)
         { // to prevent show the spaceship outsize the screen
-            shape(spaceship, width - 80, height - 160, 80, 80);
+            xd = width - 80;
         }
+        if(yd + 80 >= height && (xd + 80) <= width)
+        {
+            yd = height - 80;
+        }
+        if(yd < 0 && (xd + 80) >= width)
+        {
+            xd = width - 80;
+            yd = 0;
+        }
+        if(yd <= 0 && xd <= 0)
+        {
+            xd = 0;
+            yd = 0;
+        }
+        if(yd + 80 >= height && (xd + 80) >= width)
+        {
+            xd = width - 80;
+            yd = height - 80;
+        }
+        if(yd + 80 >= height && xd <= 0)
+        {
+            xd = 0;
+            yd = height - 80;
+        }
+        shape(spaceship, xd, yd, 80, 80);
+        //=============================================================================
         // Move chicken
+        //=============================================================================
         for(int i = 0; i < chicken.size(); i++)
         {
-
             ChickenVector c = chicken.get(i);
             c.draw();
         }
@@ -434,7 +474,8 @@ void draw()
                         shape(crackedEgg, e.x, e.y, 40, 40);
                         eggs.remove(i);
                         if(attempts != 0) attempts--;
-                        else {
+                        else
+                        {
                             gameEnd = true;
                             resultScore = score;
                             break;
