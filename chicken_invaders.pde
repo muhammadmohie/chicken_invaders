@@ -82,8 +82,8 @@ class ChickenVector extends PVector
 }
 void spawnChicken(int row)
 {
-    int col = 3;
-    int xMargin = 400;
+    int col = 5;
+    int xMargin = 300;
     int yMargin = 100;
     int x = 100;
     int y = 50;
@@ -194,6 +194,7 @@ void keyPressed()
 }
 void draw()
 {
+    System.out.println("# of chicken = " + chicken.size());
     if(gameStart)
     {
         // Draw the background for the game start
@@ -208,7 +209,7 @@ void draw()
         if(keyPressed || mousePressed)
         {
             gameStart = false;
-            spawnChicken(level);
+            //spawnChicken(level);
         }
     }
     else if(gameEnd)
