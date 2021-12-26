@@ -74,7 +74,9 @@ class ChickenVector extends PVector
         else if(this.clr == 1) shape(redChicken, this.x, this.y);
         if(frameCount % frameCountEasyness == 0)
         {
-            eggs.add(new PVector(this.dir == 1 ? this.x + 20 : this.x, this.y + 50));
+            int layEgg = Math.round(random(0, 1));
+            if (layEgg == 1) eggs.add(new PVector(this.dir == 1 ? this.x + 20 : this.x, this.y + 50));
+            else System.out.println("Chicken deceided not to lay an egg");
         }
     }
 }
