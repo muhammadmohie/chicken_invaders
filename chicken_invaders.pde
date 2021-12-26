@@ -30,6 +30,7 @@ int frameCountEasyness = 20;
 int chickenSpeed = 10;
 int eggSpeed = 20;
 int chickenMealSpeed = 30;
+
 int time = 0;
 int xd;
 boolean gameStart = true;
@@ -51,6 +52,7 @@ void levelDown() {
     frameCountEasyness += 5;
     //spawnChicken(level);
 }
+
 ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
 ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
 
@@ -368,6 +370,7 @@ void draw()
               score++;
             }
           }
+
           popMatrix();
         }
         // Work on spaceship
