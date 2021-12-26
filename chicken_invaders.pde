@@ -275,7 +275,7 @@ void draw()
         text(attempts, 70, 45);
         shape(chickensScore, 120, 15, 40, 40);
         text(score, 170, 45);
-        text("Level " + (level), 190, 45);
+        text("Level   " + (level), 20, 100);
         // Work on show bullets
         if(frameCount % 3 == 0)
         {
