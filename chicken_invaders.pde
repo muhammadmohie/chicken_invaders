@@ -25,9 +25,9 @@ int timer = 4000;
 int attempts = 5;
 int score = 0;
 int resultScore = 0;
-int frameCountEasyness = 15;
+int frameCountEasyness = 30;
 int chickenSpeed = 20;
-int eggSpeed = 20;
+int eggSpeed = 30;
 int time = 0;
 int xd;
 boolean gameStart = true;
@@ -162,6 +162,7 @@ void keyPressed()
             { // to prevent show the bullet outsize the screen
                 bullets.add(new PVector(width - 67, y));
             }
+
             time = millis();
         }
     }
@@ -295,6 +296,7 @@ void draw()
         // Move chicken
         for(int i = 0; i < chicken.size(); i++)
         {
+
             ChickenVector c = chicken.get(i);
             c.draw();
         }
@@ -321,11 +323,7 @@ void draw()
                     if(e.x + 26 > mouseX && e.x < mouseX + 80 && e.y + 26 > height - 160 && e.y < height - 80)
                     {
                         shape(crackedEgg, e.x, e.y, 40, 40);
-                        if(millis() - timer >= 500)
-                        {
-                            eggs.remove(i);
-                            timer = millis();
-                        }
+                        eggs.remove(i);
                         if(attempts != 0) attempts--;
                         else
                         {
@@ -340,11 +338,7 @@ void draw()
                     if(e.x + 26 > width - 80 && e.x < width + 80 && e.y + 26 > height - 160 && e.y < height - 80)
                     {
                         shape(crackedEgg, e.x, e.y, 40, 40);
-                        if(millis() - timer >= 500)
-                        {
-                            eggs.remove(i);
-                            timer = millis();
-                        }
+                        eggs.remove(i);
                         if(attempts != 0) attempts--;
                         else {
                             gameEnd = true;
