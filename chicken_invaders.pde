@@ -25,14 +25,30 @@ int timer = 4000;
 int attempts = 5;
 int score = 0;
 int resultScore = 0;
-int frameCountEasyness = 15;
-int chickenSpeed = 20;
+int frameCountEasyness = 20;
+int chickenSpeed = 10;
 int eggSpeed = 20;
 int time = 0;
 int xd;
 boolean gameStart = true;
 boolean gameEnd = false;
 boolean drawOnce = true;
+int level = 1;
+int maxLevel = 2;
+
+void levelUp() {
+    level++;
+    chickenSpeed += 5;
+    frameCountEasyness -= 5;
+    //spawnChicken(level);
+}
+
+void levelDown() {
+    level--;
+    chickenSpeed -= 5;
+    frameCountEasyness += 5;
+    //spawnChicken(level);
+}
 
 class ChickenVector extends PVector
 {
@@ -58,18 +74,19 @@ class ChickenVector extends PVector
         }
     }
 }
-void spawnLevel1Chicken()
+void spawnChicken(int row)
 {
+    int col = 3;
     int xMargin = 400;
-    int yMargin = 150;
+    int yMargin = 100;
     int x = 100;
     int y = 50;
     // rows
-    for(int i = 0; i < 2; i++)
+    for(int i = 0; i < row; i++)
     {
-        for(int j = 0; j < 2; j++)
+        for(int j = 0; j < col; j++)
         {
-            chicken.add(new ChickenVector(x + j * xMargin, y + i * yMargin, 1, 1));
+            chicken.add(new ChickenVector(x + j * xMargin, y + i * yMargin, i % 2 == 0 ? 0 : 1 , i % 2 == 0 ? 1 : -1));
         }
     }
 }
@@ -182,11 +199,12 @@ void draw()
         if(keyPressed || mousePressed)
         {
             gameStart = false;
+            spawnChicken(level);
         }
     }
     else if(gameEnd)
     {
-        reset();
+        //reset();
         // Draw the background for the game end
         image(background, 0, 0, width, height);
         fill(255, 255, 255);
@@ -198,17 +216,42 @@ void draw()
         text("Your score is: " + resultScore, width / 2 - 114, height / 2 + 100);
         fill(255, 255, 255);
         text("Press any key to play again", width / 2 - 246, height / 2 + 200);
+        if (level > maxLevel) {
+            text("You have reached the end of the game",width / 2 - 144, 200);
+            System.out.println("Reached max level here");
+        }
         if(keyPressed || mousePressed)
         {
+            System.out.println("Level = " + level);
+            System.out.println("attempts = " + attempts);
             gameEnd = false;
-            spawnLevel1Chicken();
+            if (level <= maxLevel) {
+                
+                // Try same level
+                if (attempts <= 0) {
+                    System.out.println("Retrying level");
+                    //spawnChicken(level);
+                }
+                // Level up
+                else {
+                    System.out.println("Level up");
+                    levelUp();
+                }
+            }
+            else {
+                level = 1;
+                chickenSpeed = 10;
+                frameCountEasyness = 20;
+            }
+            reset();
+            spawnChicken(level);
         }
     }
     else
     {
         if(drawOnce)
         {
-            spawnLevel1Chicken();
+            spawnChicken(level);
             drawOnce = false;
         }
         // Draw the background for the game
@@ -219,6 +262,7 @@ void draw()
         text(attempts, 70, 45);
         shape(chickensScore, 120, 15, 40, 40);
         text(score, 170, 45);
+        text("Level " + (level), 190, 45);
         // Work on show bullets
         if(frameCount % 3 == 0)
         {
