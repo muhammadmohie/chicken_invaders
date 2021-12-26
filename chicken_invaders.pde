@@ -14,6 +14,7 @@ PShape spaceship;
 PShape bullet;
 PShape heart;
 PShape chickensScore;
+
 // Collections and variables
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
 ArrayList < PVector > eggs = new ArrayList < PVector > ();
@@ -27,12 +28,15 @@ int score = 0;
 int resultScore = 0;
 int frameCountEasyness = 30;
 int chickenSpeed = 20;
+int chickenMealSpeed = 30;
 int eggSpeed = 30;
 int time = 0;
 int xd;
 boolean gameStart = true;
 boolean gameEnd = false;
 boolean drawOnce = true;
+ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
+ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
 
 class ChickenVector extends PVector
 {
@@ -80,6 +84,8 @@ void reset()
     chicken.clear();
     eggs.clear();
     bullets.clear();
+    chickenMeals.clear();
+    chickenMealTranslation.clear();
 }
 void setup()
 {
@@ -268,16 +274,51 @@ void draw()
                     if(b.x + 40 > toBeKilled.x && b.x < toBeKilled.x + 80 && b.y < toBeKilled.y + chickenHeight / 2 && b.y > toBeKilled.y)
                     {
                         chicken.remove(j);
-                        score++;
+                        chickenMeals.add(new PVector(toBeKilled.x , toBeKilled.y));
+                        chickenMealTranslation.add(new PVector(0, 0));
+                        //score++;
                     }
                 }
-                if(chicken.isEmpty())
-                {
-                    gameEnd = true;
-                    resultScore = score;
-                    break;
-                }
+          }
+        }
+        if(chicken.isEmpty() && chickenMeals.isEmpty())
+        {
+          gameEnd = true;
+          resultScore = score;
+        }
+          
+        // chicken meals translation
+        for(int i=0;i<chickenMeals.size();i++){
+          chickenMealTranslation.get(i).y += chickenMealSpeed;
+          pushMatrix();
+          translate(chickenMealTranslation.get(i).x ,chickenMealTranslation.get(i).y );
+          shape(chickenMeal, chickenMeals.get(i).x , chickenMeals.get(i).y);
+          // if the rocket catched the meal increase the score
+          float xPos = chickenMeals.get(i).x;
+          float yPos = chickenMeals.get(i).y + chickenMealTranslation.get(i).y;
+          if(yPos > height){
+            chickenMeals.remove(i);
+            chickenMealTranslation.remove(i);
+          }
+          if((mouseX + 80) <= width)
+          {
+            if(xPos + 80 > mouseX && xPos < mouseX + 80 && yPos + 80 > height - 160 && yPos < height - 80)
+            {
+              chickenMeals.remove(i);
+              chickenMealTranslation.remove(i);
+              score++;
             }
+          }
+          else
+          {
+            if(xPos + 80 > width - 80 && xPos < width + 80 && yPos + 80 > height - 160 && yPos < height - 80)
+            {
+              chickenMeals.remove(i);
+              chickenMealTranslation.remove(i);
+              score++;
+            }
+          }
+          popMatrix();
         }
         // Work on spaceship
         xd = mouseX;
