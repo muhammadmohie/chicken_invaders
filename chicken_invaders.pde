@@ -5,6 +5,11 @@ PFont bodyFont;
 // Images
 PImage background;
 // Shapes
+PShape sun;
+PShape earth;
+PShape moon;
+PShape planet1;
+PShape planet2;
 PShape blueChicken;
 PShape redChicken;
 PShape chickenMeal;
@@ -37,6 +42,8 @@ boolean gameEnd = false;
 boolean drawOnce = true;
 int level = 1;
 int maxLevel = 2;
+float rotationAngle = 0.0;
+
 void levelUp()
 {
     level++;
@@ -112,6 +119,11 @@ void setup()
     // Loading Images
     background = loadImage("background.jpg");
     // Loading Shapes
+    sun = loadShape("sun.svg");
+    earth = loadShape("earth.svg");
+    moon = loadShape("moon.svg");
+    planet1 = loadShape("planet1.svg");
+    planet2 = loadShape("planet2.svg"); 
     blueChicken = loadShape("blue-chicken.svg");
     redChicken = loadShape("red-chicken.svg");
     chickenMeal = loadShape("chicken-meal.svg");
@@ -205,6 +217,48 @@ void draw()
     {
         // Draw the background for the game start
         image(background, 0, 0, width, height);
+
+       // sun
+        pushMatrix();
+          shapeMode(CENTER);
+          translate(width,0);
+          rotate(rotationAngle);
+          shape(sun, 0,0);
+          rotationAngle += 0.01;
+        popMatrix();
+        // earth
+        pushMatrix();
+          shapeMode(CENTER);
+          translate(0,height);
+          rotate(rotationAngle);
+          shape(earth, 0,0);
+          rotationAngle += 0.01;
+        popMatrix();
+        // moon
+        pushMatrix();
+          shapeMode(CENTER);
+          translate(0,height);
+          rotate(rotationAngle);
+          shape(moon, 300,300);
+          rotationAngle += 0.01;
+        popMatrix();
+        // planet1
+        pushMatrix();
+          shapeMode(CENTER);
+          translate(width -400,height -150);
+          rotate(rotationAngle);
+          shape(planet1, 0,0, 150,150);
+          rotationAngle += 0.01;
+        popMatrix();
+        // planet2
+        pushMatrix();
+          shapeMode(CENTER);
+          translate(300,150);
+          rotate(rotationAngle);
+          shape(planet2, 0,0, 100,100);
+          rotationAngle += 0.01;
+        popMatrix();
+        
         fill(255, 255, 255);
         stroke(151, 223, 252);
         textFont(titleFont);
