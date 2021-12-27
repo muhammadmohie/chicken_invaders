@@ -335,11 +335,11 @@ void draw()
                         chicken.remove(j);
                         chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
                         chickenMealTranslation.add(new PVector(0, 0));
-                        //score++;
                     }
                 }
             }
         }
+        // end the level
         if(chicken.isEmpty() && chickenMeals.isEmpty())
         {
             gameEnd = true;
@@ -351,32 +351,22 @@ void draw()
             chickenMealTranslation.get(i).y += chickenMealSpeed;
             pushMatrix();
             translate(chickenMealTranslation.get(i).x, chickenMealTranslation.get(i).y);
-            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y);
-            // if the rocket catched the meal increase the score
+            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y , 50 , 50);
+            // if the rocket catched the meal, increase the score
             float xPos = chickenMeals.get(i).x;
             float yPos = chickenMeals.get(i).y + chickenMealTranslation.get(i).y;
-            if(yPos > height)
-            {
-                chickenMeals.remove(i);
-                chickenMealTranslation.remove(i);
-            }
-            if((mouseX + 80) <= width)
-            {
-                if(xPos + 80 > mouseX && xPos < mouseX + 80 && yPos + 80 > height - 160 && yPos < height - 80)
-                {
-                    chickenMeals.remove(i);
-                    chickenMealTranslation.remove(i);
-                    score++;
-                }
+            if(yPos >= height - 70)
+            {      
+              chickenMeals.remove(i);
+              chickenMealTranslation.remove(i);
             }
             else
             {
-                if(xPos + 80 > width - 80 && xPos < width + 80 && yPos + 80 > height - 160 && yPos < height - 80)
-                {
-                    chickenMeals.remove(i);
-                    chickenMealTranslation.remove(i);
-                    score++;
-                }
+              if(xPos < xd + 80 && xPos + 50 > xd && yPos + 50> yd && yPos < yd + 80){
+                score++;
+                chickenMeals.remove(i);
+                chickenMealTranslation.remove(i);                  
+              }
             }
             popMatrix();
         }
@@ -434,6 +424,17 @@ void draw()
         {
             ChickenVector c = chicken.get(i);
             c.draw();
+            // if the rocket hit the chicken.
+            if(xd + 80 > c.x && xd < c.x + 80 && yd < c.y + 80 && yd + 80 > c.y){
+              chicken.remove(i);
+              if(attempts >= 0)attempts--;
+              else
+              {
+                gameEnd = true;
+                resultScore = score;
+                break;
+              }
+            }
         }
         // Egg spawning
         for(int i = 0; i < eggs.size(); i++)
@@ -453,35 +454,16 @@ void draw()
                 e.y += eggSpeed;
                 shape(egg, e.x, e.y, 26, 26);
                 // losing attempts
-                if((mouseX + 80) <= width)
-                {
-                    if(e.x + 26 > mouseX && e.x < mouseX + 80 && e.y + 26 > height - 160 && e.y < height - 80)
-                    {
-                        shape(crackedEgg, e.x, e.y, 40, 40);
-                        eggs.remove(i);
-                        if(attempts != 0) attempts--;
-                        else
-                        {
-                            gameEnd = true;
-                            resultScore = score;
-                            break;
-                        }
-                    }
-                }
-                else
-                {
-                    if(e.x + 26 > width - 80 && e.x < width + 80 && e.y + 26 > height - 160 && e.y < height - 80)
-                    {
-                        shape(crackedEgg, e.x, e.y, 40, 40);
-                        eggs.remove(i);
-                        if(attempts != 0) attempts--;
-                        else
-                        {
-                            gameEnd = true;
-                            resultScore = score;
-                            break;
-                        }
-                    }
+                if(e.x + 26 > xd && e.x < xd + 30 && e.y + 46 > yd && e.y < yd + 80){
+                  shape(crackedEgg, e.x, e.y, 40, 40);
+                  eggs.remove(i);
+                  if(attempts >= 0) attempts--;
+                  else
+                  {
+                    gameEnd = true;
+                    resultScore = score;
+                    break;
+                  }
                 }
             }
         }
