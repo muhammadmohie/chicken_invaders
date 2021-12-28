@@ -36,6 +36,7 @@ int chickenMealSpeed = 30;
 int time = 0;
 int xd;
 int yd;
+int shipHeight = 100;
 int shipSpeed = 20;
 boolean gameStart = true;
 boolean gameEnd = false;
@@ -183,7 +184,7 @@ void keyPressed()
         yd = yd - shipSpeed;
         mouseY = yd;
     }
-    else if(key == 'S' || key == 's' && yd <= height - 40)
+    else if(key == 'S' || key == 's' && yd <= height - shipHeight)
     {
         yd = yd + shipSpeed;
         mouseY = yd;
@@ -434,21 +435,22 @@ void draw()
         //{
         //    shape(spaceship, xd, yd, 80, 80);
         //}
-        if(xd <= 40 && yd + 40 <= height)
+        if(xd <= 40 && yd + 40 <= height-shipHeight)
         {
             xd = 40;
+           // yd = height-160;
         }
         if(yd <= 40 && (xd + 40) <= width)
         {
             yd = 40;
         }
-        if(xd + 40 >= width && yd + 40 <= height && yd >= 40)
+        if(xd + 40 >= width && yd + 40 <= height-100 && yd >= 40)
         { // to prevent show the spaceship outsize the screen
             xd = width - 40;
         }
-        if(yd + 40 >= height && (xd + 40) <= width)
+        if(yd + 40 >= height-shipHeight && (xd + 40) <= width)
         {
-            yd = height - 40;
+            yd = height - 100;
         }
         if(yd < 40 && (xd + 40) >= width)
         {
@@ -460,21 +462,21 @@ void draw()
             xd = 40;
             yd = 40;
         }
-        if(yd + 40 >= height && (xd + 40) >= width)
+        if(yd + 40 >= height-shipHeight && (xd + 40) >= width)
         {
             xd = width - 40;
-            yd = height - 40;
+            yd = height - shipHeight;
         }
-        if(yd + 40 >= height && xd <= 40)
+        if(yd + 40 >= height-shipHeight && xd <= 40)
         {
             xd = 40;
-            yd = height - 40;
+            yd = height - shipHeight;
         }
         shape(spaceship, xd, yd, 80, 80);
         //=============================================================================
         // Move chicken
         //=============================================================================
-         shapeMode(CORNER);
+       shapeMode(CORNER);
         for(int i = 0; i < chicken.size(); i++)
         {
             ChickenVector c = chicken.get(i);
