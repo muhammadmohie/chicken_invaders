@@ -44,7 +44,6 @@ boolean drawOnce = true;
 int level = 1;
 int maxLevel = 2;
 float rotationAngle = 0.0;
-
 void levelUp()
 {
     level++;
@@ -124,7 +123,7 @@ void setup()
     earth = loadShape("earth.svg");
     moon = loadShape("moon.svg");
     planet1 = loadShape("planet1.svg");
-    planet2 = loadShape("planet2.svg"); 
+    planet2 = loadShape("planet2.svg");
     blueChicken = loadShape("blue-chicken.svg");
     redChicken = loadShape("red-chicken.svg");
     chickenMeal = loadShape("chicken-meal.svg");
@@ -145,7 +144,7 @@ void mousePressed()
         //y = 740;
         x = 1;
         // add the start points of of each bullet in arrayList of vectors
-        if((mouseX + 40) <= width && mouseX >= 40)
+        if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 <= height - shipHeight)
         {
             if(millis() - time >= 500)
             {
@@ -153,15 +152,43 @@ void mousePressed()
             }
             time = millis();
         }
-        else if(mouseX <= 40)
+        if(mouseX <= 40 && yd + 40 <= height - shipHeight)
         {
-            bullets.add(new PVector(40, mouseY));
+            if(millis() - time >= 500)
+            {
+                bullets.add(new PVector(40, mouseY));
+            }
+            time = millis();
         }
-        else
+        if((xd + 40) >= width && yd + 40 <= height - shipHeight)
         { // to prevent show the bullet outsize the screen
             if(millis() - time >= 500)
             {
                 bullets.add(new PVector(width - 40, mouseY));
+                time = millis();
+            }
+        }
+        if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 > height - shipHeight)
+        {
+            if(millis() - time >= 500)
+            {
+                bullets.add(new PVector(mouseX, height - shipHeight));
+            }
+            time = millis();
+        }
+        if(mouseX <= 40 && yd + 40 > height - shipHeight)
+        {
+            if(millis() - time >= 500)
+            {
+                bullets.add(new PVector(40, height - shipHeight));
+            }
+            time = millis();
+        }
+        if((xd + 40) >= width && yd + 40 > height - shipHeight)
+        { // to prevent show the bullet outsize the screen
+            if(millis() - time >= 500)
+            {
+                bullets.add(new PVector(width - 40, height - shipHeight));
                 time = millis();
             }
         }
@@ -195,17 +222,29 @@ void keyPressed()
         // add the start points of of each bullet in arrayList of vectors
         if(millis() - time >= 150)
         {
-            if((xd + 40) <= width && xd >= 40)
+            if((xd + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
             {
                 bullets.add(new PVector(xd, mouseY));
             }
-            if(xd <= 40)
+            if(xd <= 40 && yd + 40 <= height - shipHeight)
             {
                 bullets.add(new PVector(40, mouseY));
             }
-            if((xd + 40) >= width)
+            if((xd + 40) >= width && yd + 40 <= height - shipHeight)
             { // to prevent show the bullet outsize the screen
                 bullets.add(new PVector(width - 40, mouseY));
+            }
+            if((mouseX + 40) <= width && xd >= 40 && yd + 40 > height - shipHeight)
+            {
+                bullets.add(new PVector(xd, height - shipHeight));
+            }
+            if(mouseX <= 40 && yd + 40 > height - shipHeight)
+            {
+                bullets.add(new PVector(40, height - shipHeight));
+            }
+            if((mouseX + 40) >= width && yd + 40 > height - shipHeight)
+            {
+                bullets.add(new PVector(width - 40, height - shipHeight));
             }
             time = millis();
         }
@@ -218,48 +257,46 @@ void draw()
     {
         // Draw the background for the game start
         image(background, 0, 0, width, height);
-
-       // sun
+        // sun
         pushMatrix();
-          shapeMode(CENTER);
-          translate(width,0);
-          rotate(rotationAngle);
-          shape(sun, 0,0);
-          rotationAngle += 0.01;
+        shapeMode(CENTER);
+        translate(width, 0);
+        rotate(rotationAngle);
+        shape(sun, 0, 0);
+        rotationAngle += 0.01;
         popMatrix();
         // earth
         pushMatrix();
-          shapeMode(CENTER);
-          translate(0,height);
-          rotate(rotationAngle);
-          shape(earth, 0,0);
-          rotationAngle += 0.01;
+        shapeMode(CENTER);
+        translate(0, height);
+        rotate(rotationAngle);
+        shape(earth, 0, 0);
+        rotationAngle += 0.01;
         popMatrix();
         // moon
         pushMatrix();
-          shapeMode(CENTER);
-          translate(0,height);
-          rotate(rotationAngle);
-          shape(moon, 300,300);
-          rotationAngle += 0.01;
+        shapeMode(CENTER);
+        translate(0, height);
+        rotate(rotationAngle);
+        shape(moon, 300, 300);
+        rotationAngle += 0.01;
         popMatrix();
         // planet1
         pushMatrix();
-          shapeMode(CENTER);
-          translate(width -400,height -150);
-          rotate(rotationAngle);
-          shape(planet1, 0,0, 150,150);
-          rotationAngle += 0.01;
+        shapeMode(CENTER);
+        translate(width - 400, height - 150);
+        rotate(rotationAngle);
+        shape(planet1, 0, 0, 150, 150);
+        rotationAngle += 0.01;
         popMatrix();
         // planet2
         pushMatrix();
-          shapeMode(CENTER);
-          translate(300,150);
-          rotate(rotationAngle);
-          shape(planet2, 0,0, 100,100);
-          rotationAngle += 0.01;
+        shapeMode(CENTER);
+        translate(300, 150);
+        rotate(rotationAngle);
+        shape(planet2, 0, 0, 100, 100);
+        rotationAngle += 0.01;
         popMatrix();
-        
         fill(255, 255, 255);
         stroke(151, 223, 252);
         textFont(titleFont);
@@ -340,22 +377,35 @@ void draw()
         shape(chickensScore, 120, 15, 40, 40);
         text(score, 170, 45);
         text("Level   " + (level), 20, 100);
+        shapeMode(CENTER);
         // Work on show bullets
         if(frameCount % 3 == 0)
         {
             if(x == 1) // if he pressed on click left much time the number of bullets incressed
             {
-                if((mouseX + 40) <= width && xd >= 40)
+                if((mouseX + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
                 {
                     bullets.add(new PVector(xd, mouseY));
                 }
-                if(mouseX <= 40)
+                if(mouseX <= 40 && yd + 40 <= height - shipHeight)
                 {
                     bullets.add(new PVector(40, mouseY));
                 }
-                if((mouseX + 40) >= width)
+                if((mouseX + 40) >= width && yd + 40 <= height - shipHeight)
                 {
                     bullets.add(new PVector(width - 40, mouseY));
+                }
+                if((mouseX + 40) <= width && xd >= 40 && yd + 40 > height - shipHeight)
+                {
+                    bullets.add(new PVector(xd, height - shipHeight));
+                }
+                if(mouseX <= 40 && yd + 40 > height - shipHeight)
+                {
+                    bullets.add(new PVector(40, height - shipHeight));
+                }
+                if((mouseX + 40) >= width && yd + 40 > height - shipHeight)
+                {
+                    bullets.add(new PVector(width - 40, height - shipHeight));
                 }
             }
         }
@@ -406,22 +456,23 @@ void draw()
             chickenMealTranslation.get(i).y += chickenMealSpeed;
             pushMatrix();
             translate(chickenMealTranslation.get(i).x, chickenMealTranslation.get(i).y);
-            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y , 50 , 50);
+            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y, 50, 50);
             // if the rocket catched the meal, increase the score
             float xPos = chickenMeals.get(i).x;
             float yPos = chickenMeals.get(i).y + chickenMealTranslation.get(i).y;
             if(yPos >= height - 70)
-            {      
-              chickenMeals.remove(i);
-              chickenMealTranslation.remove(i);
+            {
+                chickenMeals.remove(i);
+                chickenMealTranslation.remove(i);
             }
             else
             {
-              if(xPos < xd + 80 && xPos + 50 > xd && yPos + 50> yd && yPos < yd + 80){
-                score++;
-                chickenMeals.remove(i);
-                chickenMealTranslation.remove(i);                  
-              }
+                if(xPos < xd + 80 && xPos + 50 > xd && yPos + 50 > yd && yPos < yd + 80)
+                {
+                    score++;
+                    chickenMeals.remove(i);
+                    chickenMealTranslation.remove(i);
+                }
             }
             popMatrix();
         }
@@ -435,22 +486,21 @@ void draw()
         //{
         //    shape(spaceship, xd, yd, 80, 80);
         //}
-        if(xd <= 40 && yd + 40 <= height-shipHeight)
+        if(xd <= 40 && yd + 40 <= height - shipHeight)
         {
             xd = 40;
-           // yd = height-160;
         }
         if(yd <= 40 && (xd + 40) <= width)
         {
             yd = 40;
         }
-        if(xd + 40 >= width && yd + 40 <= height-100 && yd >= 40)
+        if(xd + 40 >= width && yd + 40 <= height - shipHeight && yd >= 40)
         { // to prevent show the spaceship outsize the screen
             xd = width - 40;
         }
-        if(yd + 40 >= height-shipHeight && (xd + 40) <= width)
+        if(yd + 40 >= height - shipHeight && (xd + 40) <= width)
         {
-            yd = height - 100;
+            yd = height - shipHeight;
         }
         if(yd < 40 && (xd + 40) >= width)
         {
@@ -462,12 +512,12 @@ void draw()
             xd = 40;
             yd = 40;
         }
-        if(yd + 40 >= height-shipHeight && (xd + 40) >= width)
+        if(yd + 40 >= height && (xd + 40) >= width)
         {
             xd = width - 40;
             yd = height - shipHeight;
         }
-        if(yd + 40 >= height-shipHeight && xd <= 40)
+        if(yd + 40 >= height - shipHeight && xd <= 40)
         {
             xd = 40;
             yd = height - shipHeight;
@@ -476,21 +526,22 @@ void draw()
         //=============================================================================
         // Move chicken
         //=============================================================================
-       shapeMode(CORNER);
+        shapeMode(CORNER);
         for(int i = 0; i < chicken.size(); i++)
         {
             ChickenVector c = chicken.get(i);
             c.draw();
             // if the rocket hit the chicken.
-            if(xd + 80 > c.x && xd < c.x + 80 && yd < c.y + 80 && yd + 80 > c.y){
-              chicken.remove(i);
-              if(attempts >= 0)attempts--;
-              else
-              {
-                gameEnd = true;
-                resultScore = score;
-                break;
-              }
+            if(xd + 80 > c.x && xd < c.x + 80 && yd < c.y + 80 && yd + 80 > c.y)
+            {
+                chicken.remove(i);
+                if(attempts >= 0) attempts--;
+                else
+                {
+                    gameEnd = true;
+                    resultScore = score;
+                    break;
+                }
             }
         }
         // Egg spawning
@@ -511,16 +562,17 @@ void draw()
                 e.y += eggSpeed;
                 shape(egg, e.x, e.y, 26, 26);
                 // losing attempts
-                if(e.x + 26 > xd && e.x < xd + 30 && e.y + 46 > yd && e.y < yd + 80){
-                  shape(crackedEgg, e.x, e.y, 40, 40);
-                  eggs.remove(i);
-                  if(attempts >= 0) attempts--;
-                  else
-                  {
-                    gameEnd = true;
-                    resultScore = score;
-                    break;
-                  }
+                if(e.x + 26 > xd && e.x < xd + 30 && e.y + 46 > yd && e.y < yd + 80)
+                {
+                    shape(crackedEgg, e.x, e.y, 40, 40);
+                    eggs.remove(i);
+                    if(attempts >= 0) attempts--;
+                    else
+                    {
+                        gameEnd = true;
+                        resultScore = score;
+                        break;
+                    }
                 }
             }
         }
