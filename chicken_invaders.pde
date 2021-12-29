@@ -168,6 +168,9 @@ void resetGame()
     chickenMeals.clear();
     chickenMealTranslation.clear();
     canLevelUp = false;
+    onceAtSix = false;
+    onceAtEleven = false;
+    killedChickens = 0;
 }
 void resetLevel()
 {
