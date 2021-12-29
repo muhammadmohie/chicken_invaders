@@ -1,5 +1,4 @@
 //Fonts 
-String title = "CHICKEN INVADERS";
 PFont titleFont;
 PFont bodyFont;
 // Images
@@ -16,6 +15,7 @@ PShape chickenMeal;
 PShape egg;
 PShape crackedEgg;
 PShape spaceship;
+PShape gift;
 PShape bullet;
 PShape heart;
 PShape chickensScore;
@@ -23,7 +23,9 @@ PShape chickensScore;
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
 ArrayList < PVector > eggs = new ArrayList < PVector > ();
 ArrayList < ChickenVector > chicken = new ArrayList < ChickenVector > ();
-float speed = 30;
+ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
+ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
+float bulletSpeed = 20;
 int x = 0;
 int timer = 4000;
 int attempts = 5;
@@ -32,18 +34,50 @@ int resultScore = 0;
 int frameCountEasyness = 20;
 int chickenSpeed = 10;
 int eggSpeed = 20;
-int chickenMealSpeed = 30;
+int chickenMealSpeed = 15;
 int time = 0;
 int xd;
 int yd;
 int shipHeight = 100;
 int shipSpeed = 20;
 boolean gameStart = true;
+boolean canLevelUp = false;
+boolean gameContinue = false;
 boolean gameEnd = false;
-boolean drawOnce = true;
 int level = 1;
 int maxLevel = 2;
-float rotationAngle = 0.0;
+float sunAngle = 0.0;
+float planet1Angle = 0.0;
+float planet2Angle = 0.0;
+float moonAngle = 0.0;
+float earthAngle = 0.0;
+
+void setup()
+{
+    size(1680, 900);
+    surface.setResizable(true);
+    // Loading Images
+    background = loadImage("background.jpg");
+    // Loading Shapes
+    sun = loadShape("sun.svg");
+    earth = loadShape("earth.svg");
+    moon = loadShape("moon.svg");
+    planet1 = loadShape("planet1.svg");
+    planet2 = loadShape("planet2.svg");
+    blueChicken = loadShape("blue-chicken.svg");
+    redChicken = loadShape("red-chicken.svg");
+    chickenMeal = loadShape("chicken-meal.svg");
+    egg = loadShape("egg.svg");
+    crackedEgg = loadShape("cracked-egg.svg");
+    spaceship = loadShape("spaceship.svg");
+    gift = loadShape("gift.svg");
+    bullet = loadShape("bullet.svg");
+    heart = loadShape("heart.svg");
+    chickensScore = loadShape("score.svg");
+    // Loading fonts
+    titleFont = loadFont("ShowcardGothic-Reg-100.vlw");
+    bodyFont = loadFont("Arial-BoldMT-36.vlw");
+}
 void levelUp()
 {
     level++;
@@ -58,8 +92,7 @@ void levelDown()
     frameCountEasyness += 5;
     //spawnChicken(level);
 }
-ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
-ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
+
 class ChickenVector extends PVector
 {
     // c = 0 => blueChicken
@@ -102,40 +135,28 @@ void spawnChicken(int row)
         }
     }
 }
-void reset()
+void resetGame()
 {
+    level = 1;
+    chickenSpeed = 10;
+    frameCountEasyness = 20;
     score = 0;
+    resultScore = 0;
     attempts = 5;
     chicken.clear();
     eggs.clear();
     bullets.clear();
     chickenMeals.clear();
     chickenMealTranslation.clear();
+    canLevelUp = false;
 }
-void setup()
+void resetLevel()
 {
-    size(1680, 900);
-    surface.setResizable(true);
-    // Loading Images
-    background = loadImage("background.jpg");
-    // Loading Shapes
-    sun = loadShape("sun.svg");
-    earth = loadShape("earth.svg");
-    moon = loadShape("moon.svg");
-    planet1 = loadShape("planet1.svg");
-    planet2 = loadShape("planet2.svg");
-    blueChicken = loadShape("blue-chicken.svg");
-    redChicken = loadShape("red-chicken.svg");
-    chickenMeal = loadShape("chicken-meal.svg");
-    egg = loadShape("egg.svg");
-    crackedEgg = loadShape("cracked-egg.svg");
-    spaceship = loadShape("spaceship.svg");
-    bullet = loadShape("bullet.svg");
-    heart = loadShape("heart.svg");
-    chickensScore = loadShape("score.svg");
-    // Loading fonts
-    titleFont = loadFont("ShowcardGothic-Reg-100.vlw");
-    bodyFont = loadFont("SakkalMajalla-Bold-48.vlw");
+    chicken.clear();
+    eggs.clear();
+    bullets.clear();
+    chickenMeals.clear();
+    chickenMealTranslation.clear();
 }
 void mousePressed()
 {
@@ -261,122 +282,106 @@ void draw()
         pushMatrix();
         shapeMode(CENTER);
         translate(width, 0);
-        rotate(rotationAngle);
+        rotate(sunAngle);
         shape(sun, 0, 0);
-        rotationAngle += 0.01;
+        sunAngle += 0.009;
+        // planet 1 around the sun
+        rotate(planet1Angle);
+        shape(planet1, 2*width/3, 0, 100, 100);
+        planet1Angle += 0.001;
+        // planet 2 around the sun
+        rotate(planet2Angle);
+        shape(planet2, 0, 2*height/3, 150, 150);
+        planet2Angle += 0.001;
         popMatrix();
+        
         // earth
         pushMatrix();
         shapeMode(CENTER);
         translate(0, height);
-        rotate(rotationAngle);
+        rotate(earthAngle);
         shape(earth, 0, 0);
-        rotationAngle += 0.01;
+        earthAngle += 0.01;
+        // moon around the earth
+        rotate(moonAngle);
+        shape(moon, 0, -450);
+        moonAngle += 0.01;
         popMatrix();
-        // moon
-        pushMatrix();
-        shapeMode(CENTER);
-        translate(0, height);
-        rotate(rotationAngle);
-        shape(moon, 300, 300);
-        rotationAngle += 0.01;
-        popMatrix();
-        // planet1
-        pushMatrix();
-        shapeMode(CENTER);
-        translate(width - 400, height - 150);
-        rotate(rotationAngle);
-        shape(planet1, 0, 0, 150, 150);
-        rotationAngle += 0.01;
-        popMatrix();
-        // planet2
-        pushMatrix();
-        shapeMode(CENTER);
-        translate(300, 150);
-        rotate(rotationAngle);
-        shape(planet2, 0, 0, 100, 100);
-        rotationAngle += 0.01;
-        popMatrix();
+        
         fill(255, 255, 255);
         stroke(151, 223, 252);
         textFont(titleFont);
-        text(title, width / 2 - 458, height / 2);
+        text("CHICKEN INVADERS", width / 2 - 458, height / 2);
         fill(240, 200, 8);
         textFont(bodyFont);
         text("Press any key to start the game!", width / 2 - 246, height / 2 + 100);
-        if(keyPressed || mousePressed)
+        if(keyPressed)
         {
             gameStart = false;
+            gameContinue = true;
+            canLevelUp = true;
         }
     }
     else if(gameEnd)
     {
-        //reset();
         // Draw the background for the game end
         image(background, 0, 0, width, height);
         fill(255, 255, 255);
         stroke(151, 223, 252);
         textFont(titleFont);
-        text(title, width / 2 - 458, height / 2);
+        text("GAME END", width / 2 - 239, height / 2);
         fill(240, 200, 8);
         textFont(bodyFont);
-        text("Your score is: " + resultScore, width / 2 - 114, height / 2 + 100);
+        text("Your final score is: " + resultScore, width / 2 - 160, height / 2 + 100);
         fill(255, 255, 255);
-        text("Press any key to play again", width / 2 - 246, height / 2 + 200);
-        if(level > maxLevel)
+        textSize(36);
+        text("Press any key to go to start", width / 2 - 235, height / 2 + 200);
+        if(keyPressed)
         {
-            text("You have reached the end of the game", width / 2 - 144, 200);
-            System.out.println("Reached max level here");
-        }
-        if(keyPressed || mousePressed)
-        {
-            int tempScore = score;
-            System.out.println("Level = " + level);
-            System.out.println("attempts = " + attempts);
+            resetGame();
             gameEnd = false;
-            if(level <= maxLevel)
-            {
-                // Try same level
-                if(attempts <= 0)
-                {
-                    System.out.println("Retrying level");
-                    //spawnChicken(level);
-                }
-                // Level up
-                else
-                {
-                    System.out.println("Level up");
-                    levelUp();
-                }
-                reset();
-                score = tempScore;
-            }
-            else
-            {
-                level = 1;
-                chickenSpeed = 10;
-                frameCountEasyness = 20;
-                reset();
-            }
+            gameStart = true;
+        }
+    }
+    else if(gameContinue)
+    {
+        resetLevel();
+        // Draw the background for the game end
+        image(background, 0, 0, width, height);
+        fill(255, 255, 255);
+        stroke(151, 223, 252);
+        textFont(titleFont);
+        text("level", width / 2 - 191, height / 2);
+        fill(240, 200, 8);
+        text(level, width / 2 + 141 , height / 2);
+        fill(240, 200, 8);
+        textFont(bodyFont);
+        text("Your current score is: " + resultScore, width / 2 - 185, height / 2 + 100);
+        fill(255, 255, 255);
+        text("Press any key to continue", width / 2 - 222, height / 2 + 200);
+        if(keyPressed)
+        {
+            gameContinue = false;
             spawnChicken(level);
+            canLevelUp = true;
         }
     }
     else
     {
-        if(drawOnce)
-        {
-            spawnChicken(level);
-            drawOnce = false;
-        }
         // Draw the background for the game
         image(background, 0, 0, width, height);
         // Score details
         shape(heart, 20, 20, 30, 30);
-        textSize(36);
+        textSize(26);
         text(attempts, 70, 45);
         shape(chickensScore, 120, 15, 40, 40);
         text(score, 170, 45);
-        text("Level   " + (level), 20, 100);
+        fill(255, 255, 255);
+        textSize(28);
+        text("Level:  ", 220, 45);
+        fill(240, 200, 8);
+        textSize(28);
+        text(level, 320, 45);
         shapeMode(CENTER);
         // Work on show bullets
         if(frameCount % 3 == 0)
@@ -418,7 +423,7 @@ void draw()
             // get start points of each bullet
             PVector b = bullets.get(i);
             // move and show  bullets
-            b.y -= speed;
+            b.y -= bulletSpeed;
             shape(bullet, b.x, b.y, 50, 50);
             // remove the bullet if reach to the end of the screen
             if(!bullets.isEmpty())
@@ -444,19 +449,14 @@ void draw()
                 }
             }
         }
-        // end the level
-        if(chicken.isEmpty() && chickenMeals.isEmpty())
-        {
-            gameEnd = true;
-            resultScore = score;
-        }
+
         // chicken meals translation
         for(int i = 0; i < chickenMeals.size(); i++)
         {
             chickenMealTranslation.get(i).y += chickenMealSpeed;
             pushMatrix();
             translate(chickenMealTranslation.get(i).x, chickenMealTranslation.get(i).y);
-            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y, 50, 50);
+            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y, 80, 80);
             // if the rocket catched the meal, increase the score
             float xPos = chickenMeals.get(i).x;
             float yPos = chickenMeals.get(i).y + chickenMealTranslation.get(i).y;
@@ -535,7 +535,7 @@ void draw()
             if(xd + 80 > c.x && xd < c.x + 80 && yd < c.y + 80 && yd + 80 > c.y)
             {
                 chicken.remove(i);
-                if(attempts >= 0) attempts--;
+                if(attempts > 0) attempts--;
                 else
                 {
                     gameEnd = true;
@@ -566,7 +566,7 @@ void draw()
                 {
                     shape(crackedEgg, e.x, e.y, 40, 40);
                     eggs.remove(i);
-                    if(attempts >= 0) attempts--;
+                    if(attempts > 0) attempts--;
                     else
                     {
                         gameEnd = true;
@@ -575,6 +575,18 @@ void draw()
                     }
                 }
             }
+        }
+        // end the level
+        if(chicken.isEmpty() && chickenMeals.isEmpty() && canLevelUp)
+        {
+            if(level <= maxLevel)
+            {
+               levelUp();
+               gameContinue = true;
+            } else {
+               gameEnd = true;
+            }
+            resultScore = score;
         }
     }
 }
