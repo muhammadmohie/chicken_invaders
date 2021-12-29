@@ -25,6 +25,8 @@ ArrayList < PVector > eggs = new ArrayList < PVector > ();
 ArrayList < ChickenVector > chicken = new ArrayList < ChickenVector > ();
 ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
 ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
+ArrayList < PVector > gifts = new ArrayList < PVector > ();
+ArrayList < PVector > giftTranslation = new ArrayList < PVector > ();
 float bulletSpeed = 20;
 int x = 0;
 int timer = 4000;
@@ -35,10 +37,18 @@ int frameCountEasyness = 20;
 int chickenSpeed = 10;
 int eggSpeed = 20;
 int chickenMealSpeed = 15;
+int chickenMealWidth = 80;
+int chickenMealHeight = 80;
+int killedChickens = 0;
+int giftSpeed = 15;
+int giftWidth = 60;
+int giftHeight = 60;
 int time = 0;
 int xd;
 int yd;
 int shipHeight = 100;
+int spaceshipHeight = 80;
+int spaceshipWidth = 80;
 int shipSpeed = 20;
 boolean gameStart = true;
 boolean canLevelUp = false;
@@ -51,6 +61,9 @@ float planet1Angle = 0.0;
 float planet2Angle = 0.0;
 float moonAngle = 0.0;
 float earthAngle = 0.0;
+boolean onceAtSix = false;
+boolean onceAtEleven = false;
+int numberOfGifts = 0;
 
 void setup()
 {
@@ -84,6 +97,12 @@ void levelUp()
     chickenSpeed += 5;
     frameCountEasyness -= 5;
     //spawnChicken(level);
+}
+void generateRandomGift(){
+  int giftX = (int) (Math.random() * (width - 100)) + 100;
+  int giftY = 0;
+  gifts.add(new PVector(giftX , giftY));
+  giftTranslation.add(new PVector(0, 0));
 }
 void levelDown()
 {
@@ -445,18 +464,21 @@ void draw()
                         chicken.remove(j);
                         chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
                         chickenMealTranslation.add(new PVector(0, 0));
+                        killedChickens++;
                     }
                 }
             }
         }
-
+      
+        // ==============================================
         // chicken meals translation
+        // ==============================================
         for(int i = 0; i < chickenMeals.size(); i++)
         {
             chickenMealTranslation.get(i).y += chickenMealSpeed;
             pushMatrix();
             translate(chickenMealTranslation.get(i).x, chickenMealTranslation.get(i).y);
-            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y, 80, 80);
+            shape(chickenMeal, chickenMeals.get(i).x, chickenMeals.get(i).y, chickenMealWidth, chickenMealHeight);
             // if the rocket catched the meal, increase the score
             float xPos = chickenMeals.get(i).x;
             float yPos = chickenMeals.get(i).y + chickenMealTranslation.get(i).y;
@@ -467,7 +489,7 @@ void draw()
             }
             else
             {
-                if(xPos < xd + 80 && xPos + 50 > xd && yPos + 50 > yd && yPos < yd + 80)
+                if(xPos < xd + spaceshipHeight - 10 && xPos + chickenMealWidth - 10> xd && yPos + chickenMealHeight -10 > yd && yPos < yd + spaceshipHeight - 10)
                 {
                     score++;
                     chickenMeals.remove(i);
@@ -475,6 +497,44 @@ void draw()
                 }
             }
             popMatrix();
+        }
+        // ==============================================
+        // gifts workflow
+        // ==============================================
+        if(killedChickens == 6 && !onceAtSix){
+          generateRandomGift();
+          onceAtSix = true;
+        }
+        if(killedChickens == 16 && !onceAtEleven){
+          generateRandomGift();          
+          onceAtEleven = true;
+        }
+        for(int i = 0; i < gifts.size(); i++)
+        {
+          println(gifts.size());
+          println(i);
+          giftTranslation.get(i).y += giftSpeed;
+          pushMatrix();
+          translate(giftTranslation.get(i).x, giftTranslation.get(i).y);
+          shape(gift, gifts.get(i).x, gifts.get(i).y, giftWidth, giftHeight);
+          // if the rocket catched the meal, increase the score
+          float xPos = gifts.get(i).x;
+          float yPos = gifts.get(i).y + giftTranslation.get(i).y;
+          if(yPos >= height - 70)
+          {
+            gifts.remove(i);
+            giftTranslation.remove(i);
+          }
+          else
+          {
+            if(xPos < xd + spaceshipHeight - 10 && xPos + giftWidth - 10> xd && yPos + giftHeight -10 > yd && yPos < yd + spaceshipHeight - 10)
+            {
+              numberOfGifts++;
+              gifts.remove(i);
+              giftTranslation.remove(i);
+            }
+          }
+          popMatrix();
         }
         //==================================================================================
         // Work on spaceship
@@ -522,7 +582,7 @@ void draw()
             xd = 40;
             yd = height - shipHeight;
         }
-        shape(spaceship, xd, yd, 80, 80);
+        shape(spaceship, xd, yd, spaceshipWidth, spaceshipHeight);
         //=============================================================================
         // Move chicken
         //=============================================================================
@@ -532,7 +592,7 @@ void draw()
             ChickenVector c = chicken.get(i);
             c.draw();
             // if the rocket hit the chicken.
-            if(xd + 80 > c.x && xd < c.x + 80 && yd < c.y + 80 && yd + 80 > c.y)
+            if(xd + 20 > c.x && xd < c.x + 120 && yd < c.y + 120 && yd + 20 > c.y)
             {
                 chicken.remove(i);
                 if(attempts > 0) attempts--;
@@ -562,7 +622,7 @@ void draw()
                 e.y += eggSpeed;
                 shape(egg, e.x, e.y, 26, 26);
                 // losing attempts
-                if(e.x + 26 > xd && e.x < xd + 30 && e.y + 46 > yd && e.y < yd + 80)
+                if(e.x + 46 > xd && e.x < xd + 20 && e.y + 46 > yd && e.y < yd + 20)
                 {
                     shape(crackedEgg, e.x, e.y, 40, 40);
                     eggs.remove(i);
