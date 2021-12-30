@@ -499,15 +499,22 @@ void draw()
         fill(255, 255, 255);
         stroke(151, 223, 252);
         textFont(titleFont);
-        text("CHICKEN INVADERS", width / 2 - 458, height / 2);
+        text("CHICKEN INVADERS", width / 2 - 470, height / 2 -150);
         fill(240, 200, 8);
         textFont(bodyFont);
-        text("Press any key to start the game!", width / 2 - 246, height / 2 + 100);
+        textSize(28);
+        text("Game controls: You can move the spaceship with mouse, and fire bullets"
+        + "\nwith left click. Or use the keyboard to move up with \"W\" key, down with \"S\""
+        + "\nkey, left with \"A\" key, right with \"D\" key, and fire bullets with space key \" \"."
+        + "\nTo exit the game press backspace key at any time.", width / 2 - 480, height / 2);
+        fill(255, 255, 255);
+        text("Press any key to start the game!", width / 2 - 246, height / 2 + 200);
         // =======================================================
         // if the player pressed any key lead him to start playing
         //========================================================
         if(keyPressed)
         {
+            resetGame();
             gameStart = false;
             gameContinue = true;
             canLevelUp = true;
@@ -918,6 +925,11 @@ void draw()
                 gameEnd = true;
             }
             resultScore = score;
+        }
+        if (keyPressed) {
+          if (key == BACKSPACE) {
+            gameStart = true;
+          }
         }
     }
 }
