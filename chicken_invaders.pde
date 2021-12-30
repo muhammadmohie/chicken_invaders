@@ -21,6 +21,8 @@ PShape heart;
 PShape chickensScore;
 // Collections and variables
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
+ArrayList < PVector > doubleBullet = new ArrayList < PVector > ();
+ArrayList < PVector > doubleBullet2 = new ArrayList < PVector > ();
 ArrayList < PVector > eggs = new ArrayList < PVector > ();
 ArrayList < ChickenVector > chicken = new ArrayList < ChickenVector > ();
 ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
@@ -29,6 +31,7 @@ ArrayList < PVector > gifts = new ArrayList < PVector > ();
 ArrayList < PVector > giftTranslation = new ArrayList < PVector > ();
 float bulletSpeed = 20;
 int x = 0;
+int d = 0;
 int timer = 4000;
 int attempts = 5;
 int score = 0;
@@ -64,7 +67,6 @@ float earthAngle = 0.0;
 boolean onceAtSix = false;
 boolean onceAtEleven = false;
 int numberOfGifts = 0;
-
 void setup()
 {
     size(1680, 900);
@@ -98,11 +100,12 @@ void levelUp()
     frameCountEasyness -= 5;
     //spawnChicken(level);
 }
-void generateRandomGift(){
-  int giftX = (int) (Math.random() * (width - 100)) + 100;
-  int giftY = 0;
-  gifts.add(new PVector(giftX , giftY));
-  giftTranslation.add(new PVector(0, 0));
+void generateRandomGift()
+{
+    int giftX = (int)(Math.random() * (width - 100)) + 100;
+    int giftY = 0;
+    gifts.add(new PVector(giftX, giftY));
+    giftTranslation.add(new PVector(0, 0));
 }
 void levelDown()
 {
@@ -111,7 +114,6 @@ void levelDown()
     frameCountEasyness += 5;
     //spawnChicken(level);
 }
-
 class ChickenVector extends PVector
 {
     // c = 0 => blueChicken
@@ -165,18 +167,21 @@ void resetGame()
     chicken.clear();
     eggs.clear();
     bullets.clear();
+    doubleBullet.clear();
     chickenMeals.clear();
     chickenMealTranslation.clear();
     canLevelUp = false;
     onceAtSix = false;
     onceAtEleven = false;
     killedChickens = 0;
+    numberOfGifts = 0;
 }
 void resetLevel()
 {
     chicken.clear();
     eggs.clear();
     bullets.clear();
+    doubleBullet.clear();
     chickenMeals.clear();
     chickenMealTranslation.clear();
 }
@@ -187,52 +192,118 @@ void mousePressed()
         //y = 740;
         x = 1;
         // add the start points of of each bullet in arrayList of vectors
-        if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 <= height - shipHeight)
+        if(numberOfGifts == 0 || numberOfGifts == 1)
         {
-            if(millis() - time >= 500)
+            if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 <= height - shipHeight)
             {
-                bullets.add(new PVector(mouseX, mouseY));
-            }
-            time = millis();
-        }
-        if(mouseX <= 40 && yd + 40 <= height - shipHeight)
-        {
-            if(millis() - time >= 500)
-            {
-                bullets.add(new PVector(40, mouseY));
-            }
-            time = millis();
-        }
-        if((xd + 40) >= width && yd + 40 <= height - shipHeight)
-        { // to prevent show the bullet outsize the screen
-            if(millis() - time >= 500)
-            {
-                bullets.add(new PVector(width - 40, mouseY));
+                if(millis() - time >= 500)
+                {
+                    bullets.add(new PVector(mouseX, mouseY));
+                }
                 time = millis();
             }
-        }
-        if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 > height - shipHeight)
-        {
-            if(millis() - time >= 500)
+            if(mouseX <= 40 && yd + 40 <= height - shipHeight)
             {
-                bullets.add(new PVector(mouseX, height - shipHeight));
-            }
-            time = millis();
-        }
-        if(mouseX <= 40 && yd + 40 > height - shipHeight)
-        {
-            if(millis() - time >= 500)
-            {
-                bullets.add(new PVector(40, height - shipHeight));
-            }
-            time = millis();
-        }
-        if((xd + 40) >= width && yd + 40 > height - shipHeight)
-        { // to prevent show the bullet outsize the screen
-            if(millis() - time >= 500)
-            {
-                bullets.add(new PVector(width - 40, height - shipHeight));
+                if(millis() - time >= 500)
+                {
+                    bullets.add(new PVector(40, mouseY));
+                }
                 time = millis();
+            }
+            if((xd + 40) >= width && yd + 40 <= height - shipHeight)
+            { // to prevent show the bullet outsize the screen
+                if(millis() - time >= 500)
+                {
+                    bullets.add(new PVector(width - 40, mouseY));
+                    time = millis();
+                }
+            }
+            if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 > height - shipHeight)
+            {
+                if(millis() - time >= 500)
+                {
+                    bullets.add(new PVector(mouseX, height - shipHeight));
+                }
+                time = millis();
+            }
+            if(mouseX <= 40 && yd + 40 > height - shipHeight)
+            {
+                if(millis() - time >= 500)
+                {
+                    bullets.add(new PVector(40, height - shipHeight));
+                }
+                time = millis();
+            }
+            if((xd + 40) >= width && yd + 40 > height - shipHeight)
+            { // to prevent show the bullet outsize the screen
+                if(millis() - time >= 500)
+                {
+                    bullets.add(new PVector(width - 40, height - shipHeight));
+                    time = millis();
+                }
+            }
+        }
+        if(numberOfGifts == 1)
+        {
+            bulletSpeed = 30;
+        }
+        if(numberOfGifts == 2)
+        {
+            bulletSpeed = 40;
+            // add the start points of of each bullet in arrayList of vectors
+            if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 <= height - shipHeight)
+            {
+                if(millis() - time >= 500)
+                {
+                    doubleBullet2.add(new PVector(mouseX - 10, mouseY));
+                    doubleBullet.add(new PVector(mouseX + 10, mouseY));
+                }
+                time = millis();
+            }
+            if(mouseX <= 40 && yd + 40 <= height - shipHeight)
+            {
+                if(millis() - time >= 500)
+                {
+                    doubleBullet2.add(new PVector(50, mouseY));
+                    doubleBullet.add(new PVector(30, mouseY));
+                }
+                time = millis();
+            }
+            if((xd + 40) >= width && yd + 40 <= height - shipHeight)
+            { // to prevent show the bullet outsize the screen
+                if(millis() - time >= 500)
+                {
+                    doubleBullet2.add(new PVector(width - 30, mouseY));
+                    doubleBullet.add(new PVector(width - 50, mouseY));
+                    time = millis();
+                }
+            }
+            if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 > height - shipHeight)
+            {
+                if(millis() - time >= 500)
+                {
+                    doubleBullet2.add(new PVector(mouseX - 10, height - shipHeight));
+                    doubleBullet.add(new PVector(mouseX + 10, height - shipHeight));
+                }
+                time = millis();
+            }
+            if(mouseX <= 40 && yd + 40 > height - shipHeight)
+            {
+                if(millis() - time >= 500)
+                {
+                    doubleBullet2.add(new PVector(30, height - shipHeight));
+                    doubleBullet.add(new PVector(50, height - shipHeight));
+                }
+                time = millis();
+            }
+            if((xd + 40) >= width && yd + 40 > height - shipHeight)
+            { // to prevent show the bullet outsize the screen
+                if(millis() - time >= 500)
+                {
+                    doubleBullet2.add(new PVector(width - 30, height - shipHeight));
+                    doubleBullet.add(new PVector(width - 50, height - shipHeight));
+                    time = millis();
+                }
             }
         }
     }
@@ -263,33 +334,78 @@ void keyPressed()
     {
         //y = 740;
         // add the start points of of each bullet in arrayList of vectors
-        if(millis() - time >= 150)
+        if(numberOfGifts == 0 || numberOfGifts == 1)
         {
-            if((xd + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
+            if(millis() - time >= 150)
             {
-                bullets.add(new PVector(xd, mouseY));
+                if((xd + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
+                {
+                    bullets.add(new PVector(xd, mouseY));
+                }
+                if(xd <= 40 && yd + 40 <= height - shipHeight)
+                {
+                    bullets.add(new PVector(40, mouseY));
+                }
+                if((xd + 40) >= width && yd + 40 <= height - shipHeight)
+                { // to prevent show the bullet outsize the screen
+                    bullets.add(new PVector(width - 40, mouseY));
+                }
+                if((mouseX + 40) <= width && xd >= 40 && yd + 40 > height - shipHeight)
+                {
+                    bullets.add(new PVector(xd, height - shipHeight));
+                }
+                if(mouseX <= 40 && yd + 40 > height - shipHeight)
+                {
+                    bullets.add(new PVector(40, height - shipHeight));
+                }
+                if((mouseX + 40) >= width && yd + 40 > height - shipHeight)
+                {
+                    bullets.add(new PVector(width - 40, height - shipHeight));
+                }
+                time = millis();
             }
-            if(xd <= 40 && yd + 40 <= height - shipHeight)
+            if(numberOfGifts == 1)
             {
-                bullets.add(new PVector(40, mouseY));
+                bulletSpeed = 30;
             }
-            if((xd + 40) >= width && yd + 40 <= height - shipHeight)
-            { // to prevent show the bullet outsize the screen
-                bullets.add(new PVector(width - 40, mouseY));
-            }
-            if((mouseX + 40) <= width && xd >= 40 && yd + 40 > height - shipHeight)
+        }
+        if(numberOfGifts == 2)
+        {
+            bulletSpeed = 40;
+            if(millis() - time >= 150)
             {
-                bullets.add(new PVector(xd, height - shipHeight));
+                if((xd + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
+                {
+                    doubleBullet2.add(new PVector(xd - 10, mouseY));
+                    doubleBullet.add(new PVector(xd + 10, mouseY));
+                }
+                if(xd <= 40 && yd + 40 <= height - shipHeight)
+                {
+                    doubleBullet2.add(new PVector(30, mouseY));
+                    doubleBullet.add(new PVector(50, mouseY));
+                }
+                if((xd + 40) >= width && yd + 40 <= height - shipHeight)
+                { // to prevent show the bullet outsize the screen
+                    doubleBullet2.add(new PVector(width - 30, mouseY));
+                    doubleBullet.add(new PVector(width - 50, mouseY));
+                }
+                if((mouseX + 40) <= width && xd >= 40 && yd + 40 > height - shipHeight)
+                {
+                    doubleBullet2.add(new PVector(xd - 10, height - shipHeight));
+                    doubleBullet.add(new PVector(xd + 10, height - shipHeight));
+                }
+                if(mouseX <= 40 && yd + 40 > height - shipHeight)
+                {
+                    doubleBullet2.add(new PVector(30, height - shipHeight));
+                    doubleBullet.add(new PVector(50, height - shipHeight));
+                }
+                if((mouseX + 40) >= width && yd + 40 > height - shipHeight)
+                {
+                    doubleBullet2.add(new PVector(width - 30, height - shipHeight));
+                    doubleBullet.add(new PVector(width - 50, height - shipHeight));
+                }
+                time = millis();
             }
-            if(mouseX <= 40 && yd + 40 > height - shipHeight)
-            {
-                bullets.add(new PVector(40, height - shipHeight));
-            }
-            if((mouseX + 40) >= width && yd + 40 > height - shipHeight)
-            {
-                bullets.add(new PVector(width - 40, height - shipHeight));
-            }
-            time = millis();
         }
     }
 }
@@ -309,14 +425,13 @@ void draw()
         sunAngle += 0.009;
         // planet 1 around the sun
         rotate(planet1Angle);
-        shape(planet1, 2*width/3, 0, 100, 100);
+        shape(planet1, 2 * width / 3, 0, 100, 100);
         planet1Angle += 0.001;
         // planet 2 around the sun
         rotate(planet2Angle);
-        shape(planet2, 0, 2*height/3, 150, 150);
+        shape(planet2, 0, 2 * height / 3, 150, 150);
         planet2Angle += 0.001;
         popMatrix();
-        
         // earth
         pushMatrix();
         shapeMode(CENTER);
@@ -329,7 +444,6 @@ void draw()
         shape(moon, 0, -450);
         moonAngle += 0.01;
         popMatrix();
-        
         fill(255, 255, 255);
         stroke(151, 223, 252);
         textFont(titleFont);
@@ -375,7 +489,7 @@ void draw()
         textFont(titleFont);
         text("level", width / 2 - 191, height / 2);
         fill(240, 200, 8);
-        text(level, width / 2 + 141 , height / 2);
+        text(level, width / 2 + 141, height / 2);
         fill(240, 200, 8);
         textFont(bodyFont);
         text("Your current score is: " + resultScore, width / 2 - 185, height / 2 + 100);
@@ -410,29 +524,70 @@ void draw()
         {
             if(x == 1) // if he pressed on click left much time the number of bullets incressed
             {
-                if((mouseX + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
+                if(numberOfGifts == 0 || numberOfGifts == 1)
                 {
-                    bullets.add(new PVector(xd, mouseY));
+                    if((mouseX + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
+                    {
+                        bullets.add(new PVector(xd, mouseY));
+                    }
+                    if(mouseX <= 40 && yd + 40 <= height - shipHeight)
+                    {
+                        bullets.add(new PVector(40, mouseY));
+                    }
+                    if((mouseX + 40) >= width && yd + 40 <= height - shipHeight)
+                    {
+                        bullets.add(new PVector(width - 40, mouseY));
+                    }
+                    if((mouseX + 40) <= width && xd >= 40 && yd + 40 > height - shipHeight)
+                    {
+                        bullets.add(new PVector(xd, height - shipHeight));
+                    }
+                    if(mouseX <= 40 && yd + 40 > height - shipHeight)
+                    {
+                        bullets.add(new PVector(40, height - shipHeight));
+                    }
+                    if((mouseX + 40) >= width && yd + 40 > height - shipHeight)
+                    {
+                        bullets.add(new PVector(width - 40, height - shipHeight));
+                    }
                 }
-                if(mouseX <= 40 && yd + 40 <= height - shipHeight)
+                if(numberOfGifts == 1)
                 {
-                    bullets.add(new PVector(40, mouseY));
+                    bulletSpeed = 30;
                 }
-                if((mouseX + 40) >= width && yd + 40 <= height - shipHeight)
+                if(numberOfGifts == 2)
                 {
-                    bullets.add(new PVector(width - 40, mouseY));
-                }
-                if((mouseX + 40) <= width && xd >= 40 && yd + 40 > height - shipHeight)
-                {
-                    bullets.add(new PVector(xd, height - shipHeight));
-                }
-                if(mouseX <= 40 && yd + 40 > height - shipHeight)
-                {
-                    bullets.add(new PVector(40, height - shipHeight));
-                }
-                if((mouseX + 40) >= width && yd + 40 > height - shipHeight)
-                {
-                    bullets.add(new PVector(width - 40, height - shipHeight));
+                    bulletSpeed = 40;
+                    if((mouseX + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
+                    {
+                        doubleBullet2.add(new PVector(xd - 10, mouseY));
+                        doubleBullet.add(new PVector(xd + 10, mouseY));
+                    }
+                    if(mouseX <= 40 && yd + 40 <= height - shipHeight)
+                    {
+                        doubleBullet2.add(new PVector(30, mouseY));
+                        doubleBullet.add(new PVector(50, mouseY));
+                    }
+                    if((mouseX + 40) >= width && yd + 40 <= height - shipHeight)
+                    {
+                        doubleBullet2.add(new PVector(width - 30, mouseY));
+                        doubleBullet.add(new PVector(width - 50, mouseY));
+                    }
+                    if((mouseX + 40) <= width && xd >= 40 && yd + 40 > height - shipHeight)
+                    {
+                        doubleBullet2.add(new PVector(xd - 10, height - shipHeight));
+                        doubleBullet.add(new PVector(xd + 10, height - shipHeight));
+                    }
+                    if(mouseX <= 40 && yd + 40 > height - shipHeight)
+                    {
+                        doubleBullet2.add(new PVector(30, height - shipHeight));
+                        doubleBullet.add(new PVector(50, height - shipHeight));
+                    }
+                    if((mouseX + 40) >= width && yd + 40 > height - shipHeight)
+                    {
+                        doubleBullet2.add(new PVector(width - 30, height - shipHeight));
+                        doubleBullet.add(new PVector(width - 50, height - shipHeight));
+                    }
                 }
             }
         }
@@ -440,39 +595,81 @@ void draw()
         {
             x = 0;
         }
-        for(int i = 0; i < bullets.size(); i++)
+        if(numberOfGifts == 0 || numberOfGifts == 1)
         {
-            // get start points of each bullet
-            PVector b = bullets.get(i);
-            // move and show  bullets
-            b.y -= bulletSpeed;
-            shape(bullet, b.x, b.y, 50, 50);
-            // remove the bullet if reach to the end of the screen
-            if(!bullets.isEmpty())
+            for(int i = 0; i < bullets.size(); i++)
             {
-                if(b.y < 1)
+                // get start points of each bullet
+                PVector b = bullets.get(i);
+                // move and show  bullets
+                b.y -= bulletSpeed;
+                shape(bullet, b.x, b.y, 50, 50);
+                // remove the bullet if reach to the end of the screen
+                if(!bullets.isEmpty())
                 {
-                    bullets.remove(0);
-                }
-            }
-            // killing the chickens
-            if(!chicken.isEmpty())
-            {
-                for(int j = 0; j < chicken.size(); j++)
-                {
-                    ChickenVector toBeKilled = chicken.get(j);
-                    float chickenHeight = (toBeKilled.clr == 0) ? 81.7699 : 84.7788;
-                    if(b.x + 40 > toBeKilled.x && b.x < toBeKilled.x + 80 && b.y < toBeKilled.y + chickenHeight / 2 && b.y > toBeKilled.y)
+                    if(b.y < 1)
                     {
-                        chicken.remove(j);
-                        chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
-                        chickenMealTranslation.add(new PVector(0, 0));
-                        killedChickens++;
+                        bullets.remove(0);
+                    }
+                }
+                // killing the chickens
+                if(!chicken.isEmpty())
+                {
+                    for(int j = 0; j < chicken.size(); j++)
+                    {
+                        ChickenVector toBeKilled = chicken.get(j);
+                        float chickenHeight = (toBeKilled.clr == 0) ? 81.7699 : 84.7788;
+                        if(b.x + 40 > toBeKilled.x && b.x < toBeKilled.x + 80 && b.y < toBeKilled.y + chickenHeight / 2 && b.y > toBeKilled.y)
+                        {
+                            chicken.remove(j);
+                            chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
+                            chickenMealTranslation.add(new PVector(0, 0));
+                            killedChickens++;
+                        }
+                    }
+                }
+                d = i;
+            }
+        }
+        if(numberOfGifts == 2)
+        {
+            for(int i = 0; i < doubleBullet.size(); i++)
+            {
+                // get start points of each bullet
+                PVector b = doubleBullet2.get(i);
+                PVector b1 = doubleBullet.get(i);
+                // move and show  bullets
+                b.y -= bulletSpeed;
+                b1.y -= bulletSpeed;
+                shape(bullet, b.x, b.y, 50, 50);
+                shape(bullet, b1.x, b1.y, 50, 50);
+                // remove the bullet if reach to the end of the screen
+                if(!doubleBullet.isEmpty())
+                {
+                    if(b.y < 1)
+                    {
+                        doubleBullet2.remove(0);
+                        doubleBullet.remove(0);
+                    }
+                }
+                // killing the chickens
+                if(!chicken.isEmpty())
+                {
+                    for(int j = 0; j < chicken.size(); j++)
+                    {
+                        ChickenVector toBeKilled = chicken.get(j);
+                        float chickenHeight = (toBeKilled.clr == 0) ? 81.7699 : 84.7788;
+                        if(b.x + 40 > toBeKilled.x && b.x < toBeKilled.x + 80 && b.y < toBeKilled.y + chickenHeight / 2 && b.y > toBeKilled.y)
+                        {
+                            chicken.remove(j);
+                            chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
+                            chickenMealTranslation.add(new PVector(0, 0));
+                            killedChickens++;
+                        }
                     }
                 }
             }
         }
-      
         // ==============================================
         // chicken meals translation
         // ==============================================
@@ -492,7 +689,7 @@ void draw()
             }
             else
             {
-                if(xPos < xd + spaceshipHeight - 10 && xPos + chickenMealWidth - 10> xd && yPos + chickenMealHeight -10 > yd && yPos < yd + spaceshipHeight - 10)
+                if(xPos < xd + spaceshipHeight - 10 && xPos + chickenMealWidth - 10 > xd && yPos + chickenMealHeight - 10 > yd && yPos < yd + spaceshipHeight - 10)
                 {
                     score++;
                     chickenMeals.remove(i);
@@ -504,40 +701,42 @@ void draw()
         // ==============================================
         // gifts workflow
         // ==============================================
-        if(killedChickens == 6 && !onceAtSix){
-          generateRandomGift();
-          onceAtSix = true;
+        if(killedChickens == 6 && !onceAtSix)
+        {
+            generateRandomGift();
+            onceAtSix = true;
         }
-        if(killedChickens == 16 && !onceAtEleven){
-          generateRandomGift();          
-          onceAtEleven = true;
+        if(killedChickens == 16 && !onceAtEleven)
+        {
+            generateRandomGift();
+            onceAtEleven = true;
         }
         for(int i = 0; i < gifts.size(); i++)
         {
-          println(gifts.size());
-          println(i);
-          giftTranslation.get(i).y += giftSpeed;
-          pushMatrix();
-          translate(giftTranslation.get(i).x, giftTranslation.get(i).y);
-          shape(gift, gifts.get(i).x, gifts.get(i).y, giftWidth, giftHeight);
-          // if the rocket catched the meal, increase the score
-          float xPos = gifts.get(i).x;
-          float yPos = gifts.get(i).y + giftTranslation.get(i).y;
-          if(yPos >= height - 70)
-          {
-            gifts.remove(i);
-            giftTranslation.remove(i);
-          }
-          else
-          {
-            if(xPos < xd + spaceshipHeight - 10 && xPos + giftWidth - 10> xd && yPos + giftHeight -10 > yd && yPos < yd + spaceshipHeight - 10)
+            println(gifts.size());
+            println(i);
+            giftTranslation.get(i).y += giftSpeed;
+            pushMatrix();
+            translate(giftTranslation.get(i).x, giftTranslation.get(i).y);
+            shape(gift, gifts.get(i).x, gifts.get(i).y, giftWidth, giftHeight);
+            // if the rocket catched the meal, increase the score
+            float xPos = gifts.get(i).x;
+            float yPos = gifts.get(i).y + giftTranslation.get(i).y;
+            if(yPos >= height - 70)
             {
-              numberOfGifts++;
-              gifts.remove(i);
-              giftTranslation.remove(i);
+                gifts.remove(i);
+                giftTranslation.remove(i);
             }
-          }
-          popMatrix();
+            else
+            {
+                if(xPos < xd + spaceshipHeight - 10 && xPos + giftWidth - 10 > xd && yPos + giftHeight - 10 > yd && yPos < yd + spaceshipHeight - 10)
+                {
+                    numberOfGifts++;
+                    gifts.remove(i);
+                    giftTranslation.remove(i);
+                }
+            }
+            popMatrix();
         }
         //==================================================================================
         // Work on spaceship
@@ -644,10 +843,12 @@ void draw()
         {
             if(level <= maxLevel)
             {
-               levelUp();
-               gameContinue = true;
-            } else {
-               gameEnd = true;
+                levelUp();
+                gameContinue = true;
+            }
+            else
+            {
+                gameEnd = true;
             }
             resultScore = score;
         }
