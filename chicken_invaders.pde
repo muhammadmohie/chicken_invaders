@@ -125,19 +125,11 @@ void generateRandomGift()
         gifts.add(new PVector(giftX, giftY));
         giftTranslation.add(new PVector(0, 0));
     }
-    //==========================================================
-    //
-    //==========================================================
-void levelDown()
-    {
-        level--;
-        chickenSpeed -= 5;
-        frameCountEasyness += 5;
-        //spawnChicken(level);
-    }
-    //============================================================
-    // class to draw the chickens
-    //============================================================
+    
+//============================================================
+// class to draw the chickens
+//============================================================
+
 class ChickenVector extends PVector
 {
     // c = 0 => blueChicken
