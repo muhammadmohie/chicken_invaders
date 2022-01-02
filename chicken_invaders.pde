@@ -78,7 +78,7 @@ float planet2Angle = 0.0;
 float moonAngle = 0.0;
 float earthAngle = 0.0;
 boolean onceAtSix = false;
-boolean onceAtEleven = false;
+boolean onceAtSixteen = false;
 void setup()
     {
         size(1680, 900);
@@ -196,7 +196,7 @@ void resetGame()
         chickenMealTranslation.clear();
         canLevelUp = false;
         onceAtSix = false;
-        onceAtEleven = false;
+        onceAtSixteen = false;
         killedChickens = 0;
         numberOfGifts = 0;
     }
@@ -772,10 +772,10 @@ void draw()
             generateRandomGift();
             onceAtSix = true;
         }
-        if(killedChickens == 16 && !onceAtEleven)
+        if(killedChickens == 16 && !onceAtSixteen)
         {
             generateRandomGift();
-            onceAtEleven = true;
+            onceAtSixteen = true;
         }
         for(int i = 0; i < gifts.size(); i++)
         {
