@@ -177,7 +177,7 @@ class ChickenVector extends PVector
     }
 }
 //========================================================
-//
+//  function to draw the chickens on the screen
 //========================================================
 void spawnChicken(int row)
     {
