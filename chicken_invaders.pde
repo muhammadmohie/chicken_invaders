@@ -48,7 +48,7 @@ ArrayList < PVector > eggs = new ArrayList < PVector > ();
 ArrayList < ChickenVector > chicken = new ArrayList < ChickenVector > ();
 ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
 ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
-int attempts = 5;
+int attempts = 4;
 int score = 0;
 int resultScore = 0;
 int frameCountEasyness = 20;
@@ -205,7 +205,7 @@ void resetGame()
         bulletSpeed = 20;
         score = 0;
         resultScore = 0;
-        attempts = 5;
+        attempts = 4;
         chicken.clear();
         eggs.clear();
         bullets.clear();
@@ -587,7 +587,7 @@ void draw()
         // Score details
         shape(heart, 20, 20, 30, 30);
         textSize(26);
-        text(attempts, 70, 45);
+        text(attempts+1, 70, 45);
         shape(chickensScore, 120, 15, 40, 40);
         text(score, 170, 45);
         fill(255, 255, 255);
