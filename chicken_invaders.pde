@@ -172,7 +172,6 @@ class ChickenVector extends PVector
         {
             int layEgg = Math.round(random(0, 1));
             if(layEgg == 1) eggs.add(new PVector(this.dir == 1 ? this.x + 20 : this.x, this.y + 50));
-            else System.out.println("Chicken deceided not to lay an egg");
         }
     }
 }
@@ -472,7 +471,6 @@ void keyPressed()
 }
 void draw()
 {
-    System.out.println("# of chicken = " + chicken.size());
     //=================================================================================
     // if the game started draw a start page that inculed the instruction of the game
     //=================================================================================
