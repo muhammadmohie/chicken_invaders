@@ -118,8 +118,18 @@ void levelUp()
     //==========================================================
     // function to genertae a gift in random x and fixed y 
     //==========================================================
+void generateRandomGift()
+    {
+        int giftX = (int)(Math.random() * (width - 100)) + 100;
+        int giftY = 0;
+        gifts.add(new PVector(giftX, giftY));
+        giftTranslation.add(new PVector(0, 0));
+    }
+
+// =====================
+// killing the chickens 
+// =====================
 void checkKillingChickens(float x, float y){
-  // killing the chickens
   if(!chicken.isEmpty())
   {
     for(int j = 0; j < chicken.size(); j++)
@@ -136,14 +146,6 @@ void checkKillingChickens(float x, float y){
     }
   }
 }
-void generateRandomGift()
-    {
-        int giftX = (int)(Math.random() * (width - 100)) + 100;
-        int giftY = 0;
-        gifts.add(new PVector(giftX, giftY));
-        giftTranslation.add(new PVector(0, 0));
-    }
-    
 //============================================================
 // class to draw the chickens
 //============================================================
