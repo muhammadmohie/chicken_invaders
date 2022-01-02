@@ -767,8 +767,6 @@ void draw()
         }
         for(int i = 0; i < gifts.size(); i++)
         {
-            println(gifts.size());
-            println(i);
             giftTranslation.get(i).y += giftSpeed;
             pushMatrix();
             translate(giftTranslation.get(i).x, giftTranslation.get(i).y);
