@@ -118,6 +118,24 @@ void levelUp()
     //==========================================================
     // function to genertae a gift in random x and fixed y 
     //==========================================================
+void checkKillingChickens(float x, float y){
+  // killing the chickens
+  if(!chicken.isEmpty())
+  {
+    for(int j = 0; j < chicken.size(); j++)
+    {
+      ChickenVector toBeKilled = chicken.get(j);
+      float chickenHeight = (toBeKilled.clr == 0) ? 81.7699 : 84.7788;
+      if(x + 40 > toBeKilled.x && x < toBeKilled.x + 80 && y < toBeKilled.y + chickenHeight / 2 && y > toBeKilled.y)
+      {
+        chicken.remove(j);
+        chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
+        chickenMealTranslation.add(new PVector(0, 0));
+        killedChickens++;
+      }
+    }
+  }
+}
 void generateRandomGift()
     {
         int giftX = (int)(Math.random() * (width - 100)) + 100;
@@ -679,22 +697,7 @@ void draw()
                     bullets.remove(0);
                 }
             }
-            // killing the chickens
-            if(!chicken.isEmpty())
-            {
-                for(int j = 0; j < chicken.size(); j++)
-                {
-                    ChickenVector toBeKilled = chicken.get(j);
-                    float chickenHeight = (toBeKilled.clr == 0) ? 81.7699 : 84.7788;
-                    if(b.x + 40 > toBeKilled.x && b.x < toBeKilled.x + 80 && b.y < toBeKilled.y + chickenHeight / 2 && b.y > toBeKilled.y)
-                    {
-                        chicken.remove(j);
-                        chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
-                        chickenMealTranslation.add(new PVector(0, 0));
-                        killedChickens++;
-                    }
-                }
-            }
+            checkKillingChickens(b.x,b.y);
         }
         // drawing double bullet if the gift equal 2
         if(numberOfGifts == 2)
@@ -718,22 +721,7 @@ void draw()
                         doubleBullet.remove(0);
                     }
                 }
-                // killing the chickens
-                if(!chicken.isEmpty())
-                {
-                    for(int j = 0; j < chicken.size(); j++)
-                    {
-                        ChickenVector toBeKilled = chicken.get(j);
-                        float chickenHeight = (toBeKilled.clr == 0) ? 81.7699 : 84.7788;
-                        if(b.x + 40 > toBeKilled.x && b.x < toBeKilled.x + 80 && b.y < toBeKilled.y + chickenHeight / 2 && b.y > toBeKilled.y)
-                        {
-                            chicken.remove(j);
-                            chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
-                            chickenMealTranslation.add(new PVector(0, 0));
-                            killedChickens++;
-                        }
-                    }
-                }
+                checkKillingChickens(b.x,b.y);
             }
         }
         // ==============================================
