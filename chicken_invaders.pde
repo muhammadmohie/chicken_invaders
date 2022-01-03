@@ -128,7 +128,7 @@ void generateRandomGift()
 // =====================
 // killing the chickens 
 // =====================
-void checkKillingChickens(float x, float y){
+void checkKillingChickens(float x, float y, int bulletIndex){
   if(!chicken.isEmpty())
   {
     for(int j = 0; j < chicken.size(); j++)
@@ -141,6 +141,7 @@ void checkKillingChickens(float x, float y){
         chickenMeals.add(new PVector(toBeKilled.x, toBeKilled.y));
         chickenMealTranslation.add(new PVector(0, 0));
         killedChickens++;
+        bullets.remove(bulletIndex);
       }
     }
   }
@@ -698,10 +699,10 @@ void draw()
             {
                 if(b.y < 1)
                 {
-                    bullets.remove(0);
+                    bullets.remove(i);
                 }
             }
-            checkKillingChickens(b.x,b.y);
+            checkKillingChickens(b.x,b.y,i);
         }
         // drawing double bullet if the gift equal 2
         if(numberOfGifts == 2)
@@ -721,11 +722,11 @@ void draw()
                 {
                     if(b.y < 1)
                     {
-                        doubleBullet2.remove(0);
-                        doubleBullet.remove(0);
+                        doubleBullet2.remove(i);
+                        doubleBullet.remove(i);
                     }
                 }
-                checkKillingChickens(b.x,b.y);
+                checkKillingChickens(b.x,b.y,i);
             }
         }
         // ==============================================
