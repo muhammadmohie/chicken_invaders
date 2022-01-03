@@ -77,8 +77,8 @@ float planet1Angle = 0.0;
 float planet2Angle = 0.0;
 float moonAngle = 0.0;
 float earthAngle = 0.0;
-boolean onceAtSix = false;
-boolean onceAtSixteen = false;
+boolean onceAtFive = false;
+boolean onceAtThirteen = false;
 void setup()
     {
         size(1024, 700);
@@ -119,7 +119,7 @@ void levelUp()
     //==========================================================
 void generateRandomGift()
     {
-        int giftX = (int)(Math.random() * (width - 100));
+        int giftX = (int)(Math.random() * (width - 100) + 200);
         int giftY = 0;
         gifts.add(new PVector(giftX, giftY));
         giftTranslation.add(new PVector(0, 0));
@@ -221,8 +221,8 @@ void resetGame()
         chickenMeals.clear();
         chickenMealTranslation.clear();
         canLevelUp = false;
-        onceAtSix = false;
-        onceAtSixteen = false;
+        onceAtFive = false;
+        onceAtThirteen = false;
         killedChickens = 0;
         numberOfGifts = 0;
     }
@@ -767,15 +767,15 @@ void draw()
         // ==============================================
         // gifts workflow
         // ==============================================
-        if(killedChickens == 6 && !onceAtSix)
+        if(killedChickens == 5 && !onceAtFive)
         {
             generateRandomGift();
-            onceAtSix = true;
+            onceAtFive = true;
         }
-        if(killedChickens == 16 && !onceAtSixteen)
+        if(killedChickens == 13 && !onceAtThirteen)
         {
             generateRandomGift();
-            onceAtSixteen = true;
+            onceAtThirteen = true;
         }
         for(int i = 0; i < gifts.size(); i++)
         {
