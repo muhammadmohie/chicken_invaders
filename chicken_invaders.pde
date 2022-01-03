@@ -32,7 +32,7 @@ PShape chickensScore;
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
 ArrayList < PVector > doubleBullet = new ArrayList < PVector > ();
 ArrayList < PVector > doubleBullet2 = new ArrayList < PVector > ();
-float bulletSpeed = 20;
+float bulletSpeed = 5;
 int x = 0; // flage To see if the player pressed the mouse once or kept pressing it
 int d = 0;
 int timer = 4000;
@@ -48,20 +48,20 @@ ArrayList < PVector > eggs = new ArrayList < PVector > ();
 ArrayList < ChickenVector > chicken = new ArrayList < ChickenVector > ();
 ArrayList < PVector > chickenMeals = new ArrayList < PVector > ();
 ArrayList < PVector > chickenMealTranslation = new ArrayList < PVector > ();
-int attempts = 4;
+int attempts = 3;
 int score = 0;
 int resultScore = 0;
-int frameCountEasyness = 20;
-int chickenSpeed = 10;
-int eggSpeed = 20;
-int chickenMealSpeed = 15;
+int frameCountEasyness = 30;
+int chickenSpeed = 5;
+int eggSpeed = 5;
+int chickenMealSpeed = 5;
 int chickenMealWidth = 80;
 int chickenMealHeight = 80;
 int killedChickens = 0;
 // variables of gifts
 ArrayList < PVector > gifts = new ArrayList < PVector > ();
 ArrayList < PVector > giftTranslation = new ArrayList < PVector > ();
-int giftSpeed = 15;
+int giftSpeed = 5;
 int giftWidth = 60;
 int giftHeight = 60;
 int numberOfGifts = 0;
@@ -81,8 +81,7 @@ boolean onceAtSix = false;
 boolean onceAtSixteen = false;
 void setup()
     {
-        size(1680, 900);
-        surface.setResizable(true);
+        size(1024, 700);
         // =============== Loading Images =================
         background = loadImage("background.jpg");
         // =============== Loading Shapes =================
@@ -120,7 +119,7 @@ void levelUp()
     //==========================================================
 void generateRandomGift()
     {
-        int giftX = (int)(Math.random() * (width - 100)) + 100;
+        int giftX = (int)(Math.random() * (width - 100));
         int giftY = 0;
         gifts.add(new PVector(giftX, giftY));
         giftTranslation.add(new PVector(0, 0));
@@ -180,8 +179,8 @@ class ChickenVector extends PVector
 //========================================================
 void spawnChicken(int row)
     {
-        int col = 5;
-        int xMargin = 300;
+        int col = 4;
+        int xMargin = 200;
         int yMargin = 100;
         int x = 100;
         int y = 50;
@@ -200,12 +199,12 @@ void spawnChicken(int row)
 void resetGame()
     {
         level = 1;
-        chickenSpeed = 10;
-        frameCountEasyness = 20;
-        bulletSpeed = 20;
+        chickenSpeed = 5;
+        frameCountEasyness = 30;
+        bulletSpeed = 5;
         score = 0;
         resultScore = 0;
-        attempts = 4;
+        attempts = 3;
         chicken.clear();
         eggs.clear();
         bullets.clear();
@@ -296,13 +295,13 @@ void mousePressed()
             // increase the speed if numberOfGifts equal one
             if(numberOfGifts == 1)
             {
-                bulletSpeed = 30;
+                bulletSpeed = 10;
             }
             // add the start points of of each bullet in arrayList of vectors
             // if the number of the gifts equal 2 double the bullet and increase the speed
             if(numberOfGifts == 2)
             {
-                bulletSpeed = 40;
+                bulletSpeed = 15;
                 // add the start points of of each bullet in arrayList of vectors
                 if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 <= height - shipHeight)
                 {
@@ -424,14 +423,14 @@ void keyPressed()
             // increase the speed of the bullet if numberOfGifts equal one
             if(numberOfGifts == 1)
             {
-                bulletSpeed = 30;
+                bulletSpeed = 10;
             }
         }
         // add the start points of of each bullet in arrayList of vectors
         // if the number of the gifts equal 2 double the bullet and increase the speed
         if(numberOfGifts == 2)
         {
-            bulletSpeed = 40;
+            bulletSpeed = 15;
             if(millis() - time >= 150)
             {
                 if((xd + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
@@ -509,16 +508,17 @@ void draw()
         fill(255, 255, 255);
         stroke(151, 223, 252);
         textFont(titleFont);
-        text("CHICKEN INVADERS", width / 2 - 470, height / 2 -150);
+        textSize(64);
+        text("CHICKEN INVADERS", width / 2 - 300, height / 2 -100);
         fill(240, 200, 8);
         textFont(bodyFont);
-        textSize(28);
+        textSize(24);
         text("Game controls: You can move the spaceship with mouse, and fire bullets"
         + "\nwith left click. Or use the keyboard to move up with \"W\" key, down with \"S\""
         + "\nkey, left with \"A\" key, right with \"D\" key, and fire bullets with space key \" \"."
-        + "\nTo exit the game press backspace key at any time.", width / 2 - 480, height / 2);
+        + "\nTo exit the game press backspace key at any time.", width / 2 - 420, height / 2);
         fill(255, 255, 255);
-        text("Press any key to start the game!", width / 2 - 246, height / 2 + 200);
+        text("Press any key to start the game!", width / 2 - 180, height / 2 + 200);
         // =======================================================
         // if the player pressed any key lead him to start playing
         //========================================================
@@ -572,9 +572,13 @@ void draw()
         text("Press any key to continue", width / 2 - 222, height / 2 + 200);
         if(keyPressed)
         {
-            gameContinue = false;
-            spawnChicken(level);
-            canLevelUp = true;
+            if (key == BACKSPACE) {
+                gameStart = true;
+            } else {
+                gameContinue = false;
+                spawnChicken(level);
+                canLevelUp = true;
+            }
         }
     }
     //=============================================
@@ -600,7 +604,7 @@ void draw()
         //=======================================================
         // Work on show bullets
         // ======================================================
-        if(frameCount % 3 == 0)
+        if(frameCount % 5 == 0)
         {
             if(x == 1) // if he pressed on click left much time the number of bullets incressed
             {
@@ -636,13 +640,13 @@ void draw()
                 // increase the speed of the bullet if the numberOfGifts equal one
                 if(numberOfGifts == 1)
                 {
-                    bulletSpeed = 30;
+                    bulletSpeed = 10;
                 }
                 // add the start points of of each bullet in arrayList of vectors
                 // if the number of the gifts equal 2 double the bullet and increase the speed
                 if(numberOfGifts == 2)
                 {
-                    bulletSpeed = 40;
+                    bulletSpeed = 15;
                     if((mouseX + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
                     {
                         doubleBullet2.add(new PVector(xd - 10, mouseY));
