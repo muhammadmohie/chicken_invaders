@@ -32,7 +32,7 @@ PShape chickensScore;
 ArrayList < PVector > bullets = new ArrayList < PVector > ();
 ArrayList < PVector > doubleBullet = new ArrayList < PVector > ();
 ArrayList < PVector > doubleBullet2 = new ArrayList < PVector > ();
-float bulletSpeed = 5;
+float bulletSpeed = 10;
 int x = 0; // flage To see if the player pressed the mouse once or kept pressing it
 int d = 0;
 int timer = 4000;
@@ -202,7 +202,7 @@ void resetGame()
         level = 1;
         chickenSpeed = 5;
         frameCountEasyness = 30;
-        bulletSpeed = 5;
+        bulletSpeed = 10;
         score = 0;
         resultScore = 0;
         attempts = 3;
@@ -296,13 +296,13 @@ void mousePressed()
             // increase the speed if numberOfGifts equal one
             if(numberOfGifts == 1)
             {
-                bulletSpeed = 10;
+                bulletSpeed = 15;
             }
             // add the start points of of each bullet in arrayList of vectors
             // if the number of the gifts equal 2 double the bullet and increase the speed
             if(numberOfGifts == 2)
             {
-                bulletSpeed = 15;
+                bulletSpeed = 20;
                 // add the start points of of each bullet in arrayList of vectors
                 if((mouseX + 40) <= width && mouseX >= 40 && yd + 40 <= height - shipHeight)
                 {
@@ -424,14 +424,14 @@ void keyPressed()
             // increase the speed of the bullet if numberOfGifts equal one
             if(numberOfGifts == 1)
             {
-                bulletSpeed = 10;
+                bulletSpeed = 15;
             }
         }
         // add the start points of of each bullet in arrayList of vectors
         // if the number of the gifts equal 2 double the bullet and increase the speed
         if(numberOfGifts == 2)
         {
-            bulletSpeed = 15;
+            bulletSpeed = 20;
             if(millis() - time >= 150)
             {
                 if((xd + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
@@ -641,13 +641,13 @@ void draw()
                 // increase the speed of the bullet if the numberOfGifts equal one
                 if(numberOfGifts == 1)
                 {
-                    bulletSpeed = 10;
+                    bulletSpeed = 15;
                 }
                 // add the start points of of each bullet in arrayList of vectors
                 // if the number of the gifts equal 2 double the bullet and increase the speed
                 if(numberOfGifts == 2)
                 {
-                    bulletSpeed = 15;
+                    bulletSpeed = 20;
                     if((mouseX + 40) <= width && xd >= 40 && yd + 40 <= height - shipHeight)
                     {
                         doubleBullet2.add(new PVector(xd - 10, mouseY));
